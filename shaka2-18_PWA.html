@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<!-- ★★★ Shaka2瞑想 修正版18（最終版） ★★★ -->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Shaka2瞑想</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Hiragino Sans','Yu Gothic UI',sans-serif;background:#1a1a2e;color:#e0e0e0;min-height:100vh;display:flex;flex-direction:column;align-items:center;user-select:none}
+header{text-align:center;padding:8px;width:100%;background:linear-gradient(135deg,#16213e,#0f3460)}
+header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
+.m{display:flex;flex-direction:column;align-items:center;width:100%;max-width:500px;padding:4px 6px;gap:3px;flex:1}
+.pb{display:flex;gap:3px;width:100%;justify-content:center;flex-wrap:wrap}
+.pi{padding:4px 10px;border-radius:10px;font-size:.68rem;background:#2a2a4a;color:#888;cursor:pointer;transition:all .2s;user-select:none}
+.pi:hover{border-color:#ffd700}
+.pi.a{background:#0f3460;color:#ffd700;font-weight:bold}
+.pi.d{background:#1b5e20;color:#a5d6a7}
+.ca{width:100%;background:#16213e;border-radius:10px;padding:6px;position:relative;overflow:hidden}
+.ca::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-size:cover;background-position:center;z-index:0;transform:scaleX(-1)}
+.ca > *{position:relative;z-index:1}
+.nd{text-align:center;margin-bottom:4px;position:relative;z-index:10}
+.nm{font-size:1.35rem;font-weight:bold;color:#ffd700;min-height:1.3em}
+.ns{font-size:1rem;color:#80cbc4;margin-top:2px}
+.nr{
+  font-size:.95rem;
+  color:#ffffff;
+  margin-top:2px;
+  letter-spacing:.15em;
+  background-color:#000000;
+  padding:6px 12px;
+  border-radius:6px;
+  display:inline-block;
+}
+.ti{font-size:.8rem;color:#80cbc4;margin-top:3px}
+.ri{font-size:.7rem;color:#ffab40;text-align:center;font-weight:bold}
+.sc{width:100%;display:flex;justify-content:center;position:relative;height:240px}
+.scSvg{position:absolute;width:100%;max-width:420px;height:100%;display:block}
+.td{fill:#4a6a8a;stroke:#7ab0d4;stroke-width:.8;transition:fill .2s}
+.ta{fill:#e65100;stroke:#ffd700;stroke-width:1.8;filter:drop-shadow(0 0 3px rgba(230,81,0,.5))}
+.ta.strong{animation:strongBlink 1s linear infinite!important}
+.tm{fill:#2a2a2a;stroke:#555;stroke-width:.8;stroke-dasharray:2,1.5}
+.tl{font-size:3.2px;fill:#ccc;text-anchor:middle;pointer-events:none}
+.jl{font-size:4.5px;fill:#999;text-anchor:middle}
+.uvG{transition:transform .4s cubic-bezier(.3,0,.5,1);transform-origin:100px 82px}
+.si{font-size:.65rem;color:#888;text-align:center;margin-top:2px}
+.ct{display:flex;gap:8px;padding:4px 0;justify-content:center;flex-wrap:wrap}
+.b{padding:10px 22px;border:none;border-radius:20px;font-size:.9rem;font-weight:bold;cursor:pointer;letter-spacing:.1em;transition:all .2s}
+.b:active{transform:scale(.95)}
+.bs{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff}
+.bs:disabled{background:#888;cursor:not-allowed;opacity:.5}
+.bx{background:linear-gradient(135deg,#f44336,#c62828);color:#fff}
+.bp{background:linear-gradient(135deg,#ff9800,#e65100);color:#fff}
+.bb{background:linear-gradient(135deg,#9c27b0,#6a1b9a);color:#fff}
+.md{width:100%;background:#16213e;border-radius:10px;padding:12px;text-align:center;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.mdContent{flex:1;text-align:center}
+.md h2{font-size:1rem;color:#e8d5b7;margin-bottom:8px}
+.mo{display:flex;flex-direction:column;gap:6px;align-items:center}
+.mo label{display:block;padding:10px 16px;background:#2a2a4a;border-radius:10px;cursor:pointer;font-size:.85rem;width:90%;text-align:left;border:2px solid transparent;transition:all .2s}
+.mo label:hover{border-color:#ffd700;background:#333350}
+.mo input[type=radio]{margin-right:8px;accent-color:#ffd700}
+.mo .sub{font-size:.65rem;color:#888;margin-left:22px;margin-top:2px}
+.ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(22,33,62,.95);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;overflow-y:auto}
+.ov.show{display:flex}
+.ov h2{color:#e8d5b7;font-size:1.2rem;margin-bottom:10px}
+.ov p{color:#aaa;font-size:.95rem;margin-bottom:6px}
+.msScreen{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;z-index:300;flex-direction:column;align-items:center;overflow-y:auto;padding-bottom:20px}
+.msScreen.show{display:flex}
+.msHeader{width:100%;background:linear-gradient(135deg,#16213e,#0f3460);padding:10px;text-align:center}
+.msHeader h2{color:#e8d5b7;font-size:1rem;letter-spacing:.1em}
+.msHeader p{color:#888;font-size:.7rem;margin-top:3px}
+.msSvgWrap{width:100%;max-width:500px;padding:8px}
+.msSvgWrap svg{width:100%}
+.msLegend{display:flex;gap:12px;justify-content:center;margin:6px 0;font-size:.72rem;color:#aaa;flex-wrap:wrap}
+.msLegend span{display:flex;align-items:center;gap:4px}
+.msLegend .dot{width:10px;height:10px;border-radius:2px}
+.msLegend .dotN{background:#4a6a8a;border:1px solid #7ab0d4}
+.msLegend .dotM{background:#2a2a2a;border:1px dashed #555}
+.msMissing{color:#ce93d8;font-size:.75rem;text-align:center;min-height:1.2em;padding:2px 8px}
+.msCtrl{display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+.hsScreen{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;z-index:250;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;overflow-y:auto}
+.hsScreen.show{display:flex}
+.hsTitle{font-size:1.3rem;color:#e8d5b7;margin-bottom:16px;letter-spacing:.1em}
+.hsSubtitle{font-size:.9rem;color:#aaa;margin-bottom:20px}
+.hsOptions{display:flex;flex-direction:column;gap:8px;width:90%;max-width:300px}
+.hsOptions label{padding:12px 16px;background:#2a2a4a;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:all .2s;display:flex;align-items:center}
+.hsOptions label:hover{border-color:#ffd700;background:#333350}
+.hsOptions input[type=radio]{margin-right:12px;accent-color:#ffd700}
+.hsBtnArea{display:flex;gap:10px;margin-top:20px;justify-content:center;flex-wrap:wrap}
+.modeGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;margin-top:12px}
+@media (max-width:600px){.modeGrid{grid-template-columns:1fr}}
+.modeCard{background:#2a2a4a;border:2px solid #444;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center}
+.modeCard:hover{border-color:#ffd700;background:#333350}
+.modeCard h3{color:#ffd700;font-size:.9rem;margin-bottom:4px}
+.modeCard p{color:#aaa;font-size:.75rem}
+.modeCard.selected{border-color:#ffd700;background:#0f3460}
+.phaseBtn{padding:8px 12px;background:#16213e;border:2px solid #444;border-radius:8px;cursor:pointer;font-size:.8rem;color:#aaa;transition:all .2s;min-width:50px;height:fit-content}
+.phaseBtn:hover{border-color:#ffd700}
+.phaseBtn.active{background:#0f3460;border-color:#ffd700;color:#ffd700;font-weight:bold}
+.phaseScreen{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;z-index:350;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;overflow-y:auto}
+.phaseScreen.show{display:flex}
+.phaseHeader{width:100%;max-width:500px;background:linear-gradient(135deg,#16213e,#0f3460);padding:20px;border-radius:12px;margin-bottom:20px;text-align:center}
+.phaseHeader h2{color:#e8d5b7;font-size:1.4rem;margin-bottom:10px;letter-spacing:.1em}
+.phaseIcon{font-size:3rem;margin-bottom:10px}
+.phaseInfo{display:flex;flex-direction:column;gap:15px;width:100%;max-width:500px;margin-bottom:30px}
+.phaseInfoBox{background:#16213e;padding:15px;border-radius:10px;text-align:left}
+.phaseInfoBox h3{color:#ffd700;font-size:.95rem;margin-bottom:8px}
+.phaseInfoBox p{color:#aaa;font-size:.9rem;line-height:1.6}
+.phaseCtrl{display:flex;gap:10px;width:100%;max-width:500px;justify-content:center;flex-wrap:wrap}
+@keyframes strongBlink {
+  0% { opacity: 1; }
+  25% { opacity: 0.2; }
+  50% { opacity: 1; }
+  75% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+footer{padding:4px;font-size:.6rem;color:#888;text-align:center;margin-top:auto}
+</style>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0f3460">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Shaka2瞑想">
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(function(err) {
+    console.log('Service Worker registration failed:', err);
+  });
+}
+</script>
+</head>
+<body>
+
+<!-- 利き手選択画面 -->
+<div class="hsScreen" id="hsScreen">
+  <div class="hsTitle">🤝 利き手を選択</div>
+  <div class="hsSubtitle">磨く向きを決定します（後から変更可能）</div>
+  <div class="hsOptions">
+    <label><input type="radio" name="handedness" value="right" checked> 右手利き</label>
+    <label><input type="radio" name="handedness" value="left"> 左手利き</label>
+  </div>
+  <div class="hsBtnArea">
+    <button class="b bs" onclick="confirmHandedness()">次へ ▶</button>
+  </div>
+</div>
+
+<!-- 欠損歯入力画面 -->
+<div class="msScreen" id="msScreen">
+  <div class="msHeader">
+    <h2>🦷 欠損歯の登録</h2>
+    <p>歯をタップして欠損⇔通常を切り替え</p>
+  </div>
+  <div class="msLegend">
+    <span><span class="dot dotN"></span>通常歯</span>
+    <span><span class="dot dotM"></span>欠損歯</span>
+  </div>
+  <div class="msSvgWrap">
+    <svg id="msSvg" viewBox="0 0 200 190">
+      <rect id="ms_UR8" x="26" y="52" width="10" height="9" rx="2.5" class="td" transform="rotate(-70,31,56.5)" onclick="tgMs('UR8')"/><text x="31" y="57" class="tl" transform="rotate(-70,31,56.5)" style="pointer-events:none">8</text>
+      <rect id="ms_UR7" x="32" y="40" width="10" height="9" rx="2.5" class="td" transform="rotate(-55,37,44.5)" onclick="tgMs('UR7')"/><text x="37" y="45" class="tl" transform="rotate(-55,37,44.5)" style="pointer-events:none">7</text>
+      <rect id="ms_UR6" x="40" y="30" width="10" height="9" rx="2.5" class="td" transform="rotate(-40,45,34.5)" onclick="tgMs('UR6')"/><text x="45" y="35" class="tl" transform="rotate(-40,45,34.5)" style="pointer-events:none">6</text>
+      <rect id="ms_UR5" x="50" y="22" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-25,54.5,26)" onclick="tgMs('UR5')"/><text x="54.5" y="27" class="tl" transform="rotate(-25,54.5,26)" style="pointer-events:none">5</text>
+      <rect id="ms_UR4" x="61" y="17" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-12,65.5,21)" onclick="tgMs('UR4')"/><text x="65.5" y="22" class="tl" transform="rotate(-12,65.5,21)" style="pointer-events:none">4</text>
+      <rect id="ms_UR3" x="72" y="14" width="8" height="8" rx="2" class="td" transform="rotate(-5,76,18)" onclick="tgMs('UR3')"/><text x="76" y="19" class="tl" transform="rotate(-5,76,18)" style="pointer-events:none">3</text>
+      <rect id="ms_UR2" x="82" y="13" width="7.5" height="7.5" rx="2" class="td" onclick="tgMs('UR2')"/><text x="85.75" y="18" class="tl" style="pointer-events:none">2</text>
+      <rect id="ms_UR1" x="91" y="12.5" width="7" height="7" rx="2" class="td" onclick="tgMs('UR1')"/><text x="94.5" y="17.3" class="tl" style="pointer-events:none">1</text>
+      <rect id="ms_UL1" x="102" y="12.5" width="7" height="7" rx="2" class="td" onclick="tgMs('UL1')"/><text x="105.5" y="17.3" class="tl" style="pointer-events:none">1</text>
+      <rect id="ms_UL2" x="111" y="13" width="7.5" height="7.5" rx="2" class="td" onclick="tgMs('UL2')"/><text x="114.7" y="18" class="tl" style="pointer-events:none">2</text>
+      <rect id="ms_UL3" x="120" y="14" width="8" height="8" rx="2" class="td" transform="rotate(5,124,18)" onclick="tgMs('UL3')"/><text x="124" y="19" class="tl" transform="rotate(5,124,18)" style="pointer-events:none">3</text>
+      <rect id="ms_UL4" x="130" y="17" width="9" height="8.5" rx="2.5" class="td" transform="rotate(12,134.5,21)" onclick="tgMs('UL4')"/><text x="134.5" y="22" class="tl" transform="rotate(12,134.5,21)" style="pointer-events:none">4</text>
+      <rect id="ms_UL5" x="141" y="22" width="9" height="8.5" rx="2.5" class="td" transform="rotate(25,145.5,26)" onclick="tgMs('UL5')"/><text x="145.5" y="27" class="tl" transform="rotate(25,145.5,26)" style="pointer-events:none">5</text>
+      <rect id="ms_UL6" x="150" y="30" width="10" height="9" rx="2.5" class="td" transform="rotate(40,155,34.5)" onclick="tgMs('UL6')"/><text x="155" y="35" class="tl" transform="rotate(40,155,34.5)" style="pointer-events:none">6</text>
+      <rect id="ms_UL7" x="158" y="40" width="10" height="9" rx="2.5" class="td" transform="rotate(55,163,44.5)" onclick="tgMs('UL7')"/><text x="163" y="45" class="tl" transform="rotate(55,163,44.5)" style="pointer-events:none">7</text>
+      <rect id="ms_UL8" x="164" y="52" width="10" height="9" rx="2.5" class="td" transform="rotate(70,169,56.5)" onclick="tgMs('UL8')"/><text x="169" y="57" class="tl" transform="rotate(70,169,56.5)" style="pointer-events:none">8</text>
+      <text x="20" y="96" style="font-size:12px;font-weight:bold;fill:#ff8a65;text-anchor:middle">右</text>
+      <text x="180" y="96" style="font-size:12px;font-weight:bold;fill:#4fc3f7;text-anchor:middle">左</text>
+      <line x1="25" y1="108" x2="175" y2="108" stroke="#333" stroke-width=".3"/>
+      <rect id="ms_LR8" x="26" y="126" width="10" height="9" rx="2.5" class="td" transform="rotate(70,31,130.5)" onclick="tgMs('LR8')"/><text x="31" y="131" class="tl" transform="rotate(70,31,130.5)" style="pointer-events:none">8</text>
+      <rect id="ms_LR7" x="32" y="138" width="10" height="9" rx="2.5" class="td" transform="rotate(55,37,142.5)" onclick="tgMs('LR7')"/><text x="37" y="143" class="tl" transform="rotate(55,37,142.5)" style="pointer-events:none">7</text>
+      <rect id="ms_LR6" x="40" y="148" width="10" height="9" rx="2.5" class="td" transform="rotate(40,45,152.5)" onclick="tgMs('LR6')"/><text x="45" y="153" class="tl" transform="rotate(40,45,152.5)" style="pointer-events:none">6</text>
+      <rect id="ms_LR5" x="50" y="156" width="9" height="8.5" rx="2.5" class="td" transform="rotate(25,54.5,160)" onclick="tgMs('LR5')"/><text x="54.5" y="161" class="tl" transform="rotate(25,54.5,160)" style="pointer-events:none">5</text>
+      <rect id="ms_LR4" x="61" y="161" width="9" height="8.5" rx="2.5" class="td" transform="rotate(12,65.5,165)" onclick="tgMs('LR4')"/><text x="65.5" y="166" class="tl" transform="rotate(12,65.5,165)" style="pointer-events:none">4</text>
+      <rect id="ms_LR3" x="72" y="164" width="8" height="8" rx="2" class="td" transform="rotate(5,76,168)" onclick="tgMs('LR3')"/><text x="76" y="169" class="tl" transform="rotate(5,76,168)" style="pointer-events:none">3</text>
+      <rect id="ms_LR2" x="82" y="165.5" width="7.5" height="7.5" rx="2" class="td" onclick="tgMs('LR2')"/><text x="85.75" y="170.5" class="tl" style="pointer-events:none">2</text>
+      <rect id="ms_LR1" x="91" y="166.5" width="7" height="7" rx="2" class="td" onclick="tgMs('LR1')"/><text x="94.5" y="171.3" class="tl" style="pointer-events:none">1</text>
+      <rect id="ms_LL1" x="102" y="166.5" width="7" height="7" rx="2" class="td" onclick="tgMs('LL1')"/><text x="105.5" y="171.3" class="tl" style="pointer-events:none">1</text>
+      <rect id="ms_LL2" x="111" y="165.5" width="7.5" height="7.5" rx="2" class="td" onclick="tgMs('LL2')"/><text x="114.7" y="170.5" class="tl" style="pointer-events:none">2</text>
+      <rect id="ms_LL3" x="120" y="164" width="8" height="8" rx="2" class="td" transform="rotate(-5,124,168)" onclick="tgMs('LL3')"/><text x="124" y="169" class="tl" transform="rotate(-5,124,168)" style="pointer-events:none">3</text>
+      <rect id="ms_LL4" x="130" y="161" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-12,134.5,165)" onclick="tgMs('LL4')"/><text x="134.5" y="166" class="tl" transform="rotate(-12,134.5,165)" style="pointer-events:none">4</text>
+      <rect id="ms_LL5" x="141" y="156" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-25,145.5,160)" onclick="tgMs('LL5')"/><text x="145.5" y="161" class="tl" transform="rotate(-25,145.5,160)" style="pointer-events:none">5</text>
+      <rect id="ms_LL6" x="150" y="148" width="10" height="9" rx="2.5" class="td" transform="rotate(-40,155,152.5)" onclick="tgMs('LL6')"/><text x="155" y="153" class="tl" transform="rotate(-40,155,152.5)" style="pointer-events:none">6</text>
+      <rect id="ms_LL7" x="158" y="138" width="10" height="9" rx="2.5" class="td" transform="rotate(-55,163,142.5)" onclick="tgMs('LL7')"/><text x="163" y="143" class="tl" transform="rotate(-55,163,142.5)" style="pointer-events:none">7</text>
+      <rect id="ms_LL8" x="164" y="126" width="10" height="9" rx="2.5" class="td" transform="rotate(-70,169,130.5)" onclick="tgMs('LL8')"/><text x="169" y="131" class="tl" transform="rotate(-70,169,130.5)" style="pointer-events:none">8</text>
+    </svg>
+  </div>
+  <div class="msMissing" id="msMissing">欠損歯なし</div>
+  <div class="msCtrl">
+    <button class="b bx" onclick="msClear()">🗑 リセット</button>
+    <button class="b bb" onclick="backFromMs()">◀ 戻る</button>
+    <button class="b bs" onclick="msSave()">💾 保存して進む</button>
+  </div>
+</div>
+
+<!-- 遷移オーバーレイ -->
+<div class="ov" id="ov">
+  <h2 id="oH"></h2>
+  <p id="oP"></p>
+  <p id="oP2"></p>
+  <button class="b bs" style="margin-top:14px" onclick="ovGo()">準備できたら ▶</button>
+</div>
+
+<!-- フェーズ準備画面 -->
+<div class="phaseScreen" id="phaseScreen">
+  <div class="phaseHeader">
+    <div class="phaseIcon" id="phaseIcon"></div>
+    <h2 id="phaseName"></h2>
+    <p id="phaseSubtitle" style="color:#888;font-size:.9rem;margin-top:8px"></p>
+  </div>
+  <div class="phaseInfo">
+    <div class="phaseInfoBox">
+      <h3>🪥 使用ブラシ</h3>
+      <p id="brushInfo"></p>
+    </div>
+    <div class="phaseInfoBox">
+      <h3>📍 対象数</h3>
+      <p id="timeInfo"></p>
+    </div>
+    <div class="phaseInfoBox">
+      <h3>📋 内容</h3>
+      <p id="contentInfo"></p>
+    </div>
+  </div>
+  <div class="phaseCtrl">
+    <button class="b bb" onclick="backToModeScreen()" style="width:30%">🔧 設定に戻る</button>
+    <button class="b bs" onclick="startPhaseSession()" style="width:35%">▶ スタート</button>
+    <button class="b bp" id="nextPhaseBtn" onclick="nextPhase()" style="width:30%">次へ ▶</button>
+  </div>
+</div>
+
+<header><h1>🪵 Shaka2瞑想</h1></header>
+<div class="m">
+<div class="pb" id="tabArea" style="display:none">
+  <div class="pi a" id="p1">🪥エリア磨き</div>
+  <div class="pi" id="p2">🔗歯間</div>
+  <div class="pi" id="p3">🔍ワンタフト</div>
+  <div class="pi" id="pMs" onclick="openMs()" style="color:#ce93d8;cursor:pointer">🦷欠損</div>
+</div>
+
+<!-- 全モード選択画面 -->
+<div id="allModeScreen" style="display:none;width:100%;max-width:500px;padding:4px 6px">
+
+  <div class="md">
+    <div class="mdContent">
+      <h2>🪥 エリア磨きモード</h2>
+      <div class="modeGrid">
+        <div class="modeCard" onclick="selectAreaMode('standard')">
+          <h3>標準</h3>
+          <p>利き手1回</p>
+        </div>
+        <div class="modeCard" onclick="selectAreaMode('thorough')">
+          <h3>念入り</h3>
+          <p>利き手2回</p>
+        </div>
+        <div class="modeCard" onclick="selectAreaMode('brain')">
+          <h3>ブレイン</h3>
+          <p>利き手＋非優位手</p>
+        </div>
+      </div>
+    </div>
+    <button class="phaseBtn" data-phase="area" onclick="togglePhase('area')">✓</button>
+  </div>
+
+  <div class="md">
+    <div class="mdContent">
+      <h2>🔗 歯間磨きモード</h2>
+      <div class="modeGrid">
+        <div class="modeCard" onclick="selectInterMode('standard')">
+          <h3>標準</h3>
+          <p>利き手1回</p>
+        </div>
+        <div class="modeCard" onclick="selectInterMode('brain')">
+          <h3>ブレイン</h3>
+          <p>非優位手1回</p>
+        </div>
+      </div>
+    </div>
+    <button class="phaseBtn" data-phase="inter" onclick="togglePhase('inter')">✓</button>
+  </div>
+
+  <div class="md">
+    <div class="mdContent">
+      <h2>🔍 ワンタフト磨きモード</h2>
+      <div class="modeGrid">
+        <div class="modeCard" onclick="selectWantapMode('standard')">
+          <h3>標準</h3>
+          <p>利き手1回</p>
+        </div>
+        <div class="modeCard" onclick="selectWantapMode('brain')">
+          <h3>ブレイン</h3>
+          <p>非優位手1回</p>
+        </div>
+      </div>
+    </div>
+    <button class="phaseBtn" data-phase="wantap" onclick="togglePhase('wantap')">✓</button>
+  </div>
+
+    <div style="display:flex;gap:8px;padding:4px 0;justify-content:center;flex-wrap:wrap">
+    <button class="b bb" onclick="openInitSettings()" style="width:30%">⚙️ 初期設定</button>
+    <button class="b bs" id="completeBtn" onclick="gotoPhaseScreen()" style="width:45%" disabled>▶ スタート</button>
+  </div>
+</div>
+
+<div class="ca" id="caMain" style="display:none">
+  <div class="nd">
+    <div class="nm" id="nM"></div>
+    <div class="ns" id="nS"></div>
+    <div class="nr" id="nR"></div>
+    <div class="ti" id="tI">00:00</div>
+  </div>
+  <div class="ri" id="rI"></div>
+  <div class="sc">
+    <svg class="scSvg" viewBox="0 0 200 190">
+      <rect x="12" y="14" width="5" height="76" rx="2.5" fill="#1e1e3a" stroke="#333" stroke-width=".3"/>
+      <rect id="bbF" x="12" y="90" width="5" height="0" rx="2.5" fill="#42a5f5" style="transition:y .85s,height .85s"/>
+      <text id="bbT" x="14.5" y="10" style="font-size:4.5px;fill:#aaa;text-anchor:middle"></text>
+      <rect id="UR8" x="26" y="52" width="10" height="9" rx="2.5" class="td" transform="rotate(-70,31,56.5)"/><text x="31" y="57" class="tl" transform="rotate(-70,31,56.5)">8</text>
+      <rect id="UR7" x="32" y="40" width="10" height="9" rx="2.5" class="td" transform="rotate(-55,37,44.5)"/><text x="37" y="45" class="tl" transform="rotate(-55,37,44.5)">7</text>
+      <rect id="UR6" x="40" y="30" width="10" height="9" rx="2.5" class="td" transform="rotate(-40,45,34.5)"/><text x="45" y="35" class="tl" transform="rotate(-40,45,34.5)">6</text>
+      <rect id="UR5" x="50" y="22" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-25,54.5,26)"/><text x="54.5" y="27" class="tl" transform="rotate(-25,54.5,26)">5</text>
+      <rect id="UR4" x="61" y="17" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-12,65.5,21)"/><text x="65.5" y="22" class="tl" transform="rotate(-12,65.5,21)">4</text>
+      <rect id="UR3" x="72" y="14" width="8" height="8" rx="2" class="td" transform="rotate(-5,76,18)"/><text x="76" y="19" class="tl" transform="rotate(-5,76,18)">3</text>
+      <rect id="UR2" x="82" y="13" width="7.5" height="7.5" rx="2" class="td"/><text x="85.75" y="18" class="tl">2</text>
+      <rect id="UR1" x="91" y="12.5" width="7" height="7" rx="2" class="td"/><text x="94.5" y="17.3" class="tl">1</text>
+      <rect id="UL1" x="102" y="12.5" width="7" height="7" rx="2" class="td"/><text x="105.5" y="17.3" class="tl">1</text>
+      <rect id="UL2" x="111" y="13" width="7.5" height="7.5" rx="2" class="td"/><text x="114.7" y="18" class="tl">2</text>
+      <rect id="UL3" x="120" y="14" width="8" height="8" rx="2" class="td" transform="rotate(5,124,18)"/><text x="124" y="19" class="tl" transform="rotate(5,124,18)">3</text>
+      <rect id="UL4" x="130" y="17" width="9" height="8.5" rx="2.5" class="td" transform="rotate(12,134.5,21)"/><text x="134.5" y="22" class="tl" transform="rotate(12,134.5,21)">4</text>
+      <rect id="UL5" x="141" y="22" width="9" height="8.5" rx="2.5" class="td" transform="rotate(25,145.5,26)"/><text x="145.5" y="27" class="tl" transform="rotate(25,145.5,26)">5</text>
+      <rect id="UL6" x="150" y="30" width="10" height="9" rx="2.5" class="td" transform="rotate(40,155,34.5)"/><text x="155" y="35" class="tl" transform="rotate(40,155,34.5)">6</text>
+      <rect id="UL7" x="158" y="40" width="10" height="9" rx="2.5" class="td" transform="rotate(55,163,44.5)"/><text x="163" y="45" class="tl" transform="rotate(55,163,44.5)">7</text>
+      <rect id="UL8" x="164" y="52" width="10" height="9" rx="2.5" class="td" transform="rotate(70,169,56.5)"/><text x="169" y="57" class="tl" transform="rotate(70,169,56.5)">8</text>
+      <line x1="100" y1="12" x2="100" y2="180" stroke="#ffffff" stroke-width="0.8"/>
+      <text x="20" y="96" style="font-size:12px;font-weight:bold;fill:#ff8a65;text-anchor:middle">右</text>
+      <text x="180" y="96" style="font-size:12px;font-weight:bold;fill:#4fc3f7;text-anchor:middle">左</text>
+
+      <g class="uvG" id="uv">
+        <path d="M100,76 L100,84" stroke="#d4a0a0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M100,83 C96,87 94,92 94.5,96 C95,99 97,101.5 100,102.5 C103,101.5 105,99 105.5,96 C106,92 104,87 100,83Z" fill="url(#uvGr)"/>
+      </g>
+      <defs><radialGradient id="uvGr" cx="38%" cy="30%"><stop offset="0%" stop-color="#f4a0a0"/><stop offset="70%" stop-color="#d45050"/><stop offset="100%" stop-color="#b03030"/></radialGradient></defs>
+      <line x1="25" y1="108" x2="175" y2="108" stroke="#ffffff" stroke-width="0.8"/>
+      <rect id="LR8" x="26" y="126" width="10" height="9" rx="2.5" class="td" transform="rotate(70,31,130.5)"/><text x="31" y="131" class="tl" transform="rotate(70,31,130.5)">8</text>
+      <rect id="LR7" x="32" y="138" width="10" height="9" rx="2.5" class="td" transform="rotate(55,37,142.5)"/><text x="37" y="143" class="tl" transform="rotate(55,37,142.5)">7</text>
+      <rect id="LR6" x="40" y="148" width="10" height="9" rx="2.5" class="td" transform="rotate(40,45,152.5)"/><text x="45" y="153" class="tl" transform="rotate(40,45,152.5)">6</text>
+      <rect id="LR5" x="50" y="156" width="9" height="8.5" rx="2.5" class="td" transform="rotate(25,54.5,160)"/><text x="54.5" y="161" class="tl" transform="rotate(25,54.5,160)">5</text>
+      <rect id="LR4" x="61" y="161" width="9" height="8.5" rx="2.5" class="td" transform="rotate(12,65.5,165)"/><text x="65.5" y="166" class="tl" transform="rotate(12,65.5,165)">4</text>
+      <rect id="LR3" x="72" y="164" width="8" height="8" rx="2" class="td" transform="rotate(5,76,168)"/><text x="76" y="169" class="tl" transform="rotate(5,76,168)">3</text>
+      <rect id="LR2" x="82" y="165.5" width="7.5" height="7.5" rx="2" class="td"/><text x="85.75" y="170.5" class="tl">2</text>
+      <rect id="LR1" x="91" y="166.5" width="7" height="7" rx="2" class="td"/><text x="94.5" y="171.3" class="tl">1</text>
+      <rect id="LL1" x="102" y="166.5" width="7" height="7" rx="2" class="td"/><text x="105.5" y="171.3" class="tl">1</text>
+      <rect id="LL2" x="111" y="165.5" width="7.5" height="7.5" rx="2" class="td"/><text x="114.7" y="170.5" class="tl">2</text>
+      <rect id="LL3" x="120" y="164" width="8" height="8" rx="2" class="td" transform="rotate(-5,124,168)"/><text x="124" y="169" class="tl" transform="rotate(-5,124,168)">3</text>
+      <rect id="LL4" x="130" y="161" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-12,134.5,165)"/><text x="134.5" y="166" class="tl" transform="rotate(-12,134.5,165)">4</text>
+      <rect id="LL5" x="141" y="156" width="9" height="8.5" rx="2.5" class="td" transform="rotate(-25,145.5,160)"/><text x="145.5" y="161" class="tl" transform="rotate(-25,145.5,160)">5</text>
+      <rect id="LL6" x="150" y="148" width="10" height="9" rx="2.5" class="td" transform="rotate(-40,155,152.5)"/><text x="155" y="153" class="tl" transform="rotate(-40,155,152.5)">6</text>
+      <rect id="LL7" x="158" y="138" width="10" height="9" rx="2.5" class="td" transform="rotate(-55,163,142.5)"/><text x="163" y="143" class="tl" transform="rotate(-55,163,142.5)">7</text>
+      <rect id="LL8" x="164" y="126" width="10" height="9" rx="2.5" class="td" transform="rotate(-70,169,130.5)"/><text x="169" y="131" class="tl" transform="rotate(-70,169,130.5)">8</text>
+    </svg>
+  </div>
+  <div class="si" id="sI"></div>
+</div>
+
+<div class="ct" id="mainCtrl" style="display:none">
+  <button class="b bb" id="bB" onclick="backToPhaseScreen()">◀ 戻る</button>
+  <button class="b bp" id="bP" onclick="pa()">⏸ 一時停止</button>
+  <button class="b bx" id="bX" onclick="st()">⏹ 終了</button>
+</div>
+
+</div>
+<footer>★ Shaka2瞑想 修正版18（最終版・完成） ★ 鳥井式心身調律歯磨き法</footer>
+
+<script>
+var video = null;
+var canvas = null;
+var ctx = null;
+
+function initCameraImmediately() {
+  console.log('カメラ初期化開始...');
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+      .then(function(stream) {
+        console.log('カメラ許可取得 - ストリーム開始');
+        if (!video) {
+          video = document.createElement('video');
+          video.style.display = 'none';
+          document.body.appendChild(video);
+        }
+        video.srcObject = stream;
+        video.play();
+        if (!canvas) {
+          canvas = document.createElement('canvas');
+          ctx = canvas.getContext('2d');
+        }
+      })
+      .catch(function(err) {
+        console.error('カメラアクセス拒否:', err);
+      });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCameraImmediately);
+} else {
+  initCameraImmediately();
+}
+
+var handedness = 'right';
+var areaMode = null;
+var interMode = null;
+var wantapMode = null;
+var phase = 1;
+var AC = null, run = false, el = 0, si = 0, bi = 0, iv = null, ud = 1, ovAct = '';
+var D = [], DI = [], DW = [];
+var areaRepeatCount = 0;
+var enabledPhases = { area: false, inter: false, wantap: false };
+var startPhase = 1;
+var phaseOrder = ['area', 'inter', 'wantap'];
+var currentPhaseIndex = 0;
+var isBrainSecondRound = false;
+
+var ALL_TEETH = ['UR8','UR7','UR6','UR5','UR4','UR3','UR2','UR1','UL1','UL2','UL3','UL4','UL5','UL6','UL7','UL8','LR8','LR7','LR6','LR5','LR4','LR3','LR2','LR1','LL1','LL2','LL3','LL4','LL5','LL6','LL7','LL8'];
+var missingTeeth = {};
+
+function loadMs() { try { var s = localStorage.getItem('shaka2_missing'); missingTeeth = s ? JSON.parse(s) : {}; } catch(e) { missingTeeth = {}; } }
+function saveMs() { try { localStorage.setItem('shaka2_missing', JSON.stringify(missingTeeth)); } catch(e) {} }
+function isMissing(id) { return !!missingTeeth[id]; }
+function syncMsSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById('ms_' + id); if (e) e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); syncMainSvg(); }
+function syncMainSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById(id); if (!e) return; if (e.classList.contains('ta')) return; e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); }
+function updateMsText() { var el2 = document.getElementById('msMissing'); var keys = Object.keys(missingTeeth).filter(function(k) { return missingTeeth[k]; }); if (keys.length === 0) { el2.textContent = '欠損歯なし'; } else { var names = keys.map(function(id) { return (id[0]==='U'?'上顎':'下顎')+(id[1]==='R'?'右側':'左側')+id.slice(2)+'番'; }); el2.textContent = '欠損：' + names.join('　'); } }
+function tgMs(id) { if (missingTeeth[id]) delete missingTeeth[id]; else missingTeeth[id] = true; syncMsSvg(); }
+function msClear() { missingTeeth = {}; syncMsSvg(); updateMsText(); }
+function msSave() { saveMs(); document.getElementById('msScreen').classList.remove('show'); document.getElementById('allModeScreen').style.display = 'block'; }
+function backFromMs() { document.getElementById('msScreen').classList.remove('show'); document.getElementById('hsScreen').classList.add('show'); }
+function backToMs() { document.getElementById('allModeScreen').style.display = 'none'; document.getElementById('msScreen').classList.add('show'); }
+function openMs() { if (run) return; syncMsSvg(); document.getElementById('msScreen').classList.add('show'); }
+
+function confirmHandedness() {
+  handedness = document.querySelector('input[name=handedness]:checked').value;
+  try { localStorage.setItem('shaka2_handedness', handedness); } catch(e) {}
+  document.getElementById('hsScreen').classList.remove('show');
+  loadMs(); syncMainSvg();
+  document.getElementById('msScreen').classList.add('show');
+}
+function loadHandedness() { try { var s = localStorage.getItem('shaka2_handedness'); if (s && (s==='right'||s==='left')) handedness = s; } catch(e) {} }
+
+function selectAreaMode(mode) { areaMode = mode; document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i) { e.classList.toggle('selected', i===(mode==='standard'?0:mode==='thorough'?1:2)); }); updateCompleteBtn(); }
+function selectInterMode(mode) { interMode = mode; document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i) { e.classList.toggle('selected', mode==='standard'?i===0:i===1); }); updateCompleteBtn(); }
+function selectWantapMode(mode) { wantapMode = mode; document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i) { e.classList.toggle('selected', mode==='standard'?i===0:i===1); }); updateCompleteBtn(); }
+
+function togglePhase(pt) {
+  enabledPhases[pt] = !enabledPhases[pt];
+  var btn = document.querySelector('[data-phase="'+pt+'"]');
+  if (btn) btn.classList.toggle('active', enabledPhases[pt]);
+  updateCompleteBtn();
+}
+
+function updateCompleteBtn() {
+  var btn = document.getElementById('completeBtn');
+  var allSelected = (enabledPhases.area && areaMode !== null) ||
+                    (enabledPhases.inter && interMode !== null) ||
+                    (enabledPhases.wantap && wantapMode !== null);
+  btn.disabled = !allSelected;
+}
+
+function iA() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); }
+
+function playStartSound() {
+  if (!AC) return;
+  var n = AC.currentTime;
+  var o = AC.createOscillator();
+  o.type = 'sine';
+  o.frequency.value = 400;
+  var g = AC.createGain();
+  g.gain.setValueAtTime(0.8, n);
+  g.gain.linearRampToValueAtTime(0, n + 0.2);
+  o.connect(g);
+  g.connect(AC.destination);
+  o.start(n);
+  o.stop(n + 0.2);
+}
+
+function mk() {
+  if (!AC) return;
+  var n = AC.currentTime;
+  var b = AC.createBuffer(1, AC.sampleRate*.015, AC.sampleRate), d = b.getChannelData(0);
+  for (var i = 0; i < d.length; i++) d[i] = (Math.random()*2-1)*.5;
+  var s = AC.createBufferSource(); s.buffer = b;
+  var f = AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=600; f.Q.value=2;
+  var g = AC.createGain(); g.gain.setValueAtTime(.6,n); g.gain.exponentialRampToValueAtTime(.001,n+.03);
+  s.connect(f); f.connect(g); g.connect(AC.destination); s.start(n); s.stop(n+.03);
+  var o = AC.createOscillator(), h = AC.createGain(), k = AC.createBiquadFilter();
+  o.type='sine'; o.frequency.setValueAtTime(350,n); o.frequency.exponentialRampToValueAtTime(180,n+.06); o.frequency.exponentialRampToValueAtTime(160,n+.2);
+  h.gain.setValueAtTime(.45,n); h.gain.exponentialRampToValueAtTime(.12,n+.08); h.gain.exponentialRampToValueAtTime(.001,n+.3);
+  k.type='lowpass'; k.frequency.value=800; k.Q.value=1.5;
+  o.connect(k); k.connect(h); h.connect(AC.destination); o.start(n); o.stop(n+.35);
+  var o2 = AC.createOscillator(), g2 = AC.createGain();
+  o2.type='sine'; o2.frequency.setValueAtTime(120,n); o2.frequency.exponentialRampToValueAtTime(90,n+.15);
+  g2.gain.setValueAtTime(.18,n); g2.gain.exponentialRampToValueAtTime(.001,n+.25);
+  o2.connect(g2); g2.connect(AC.destination); o2.start(n); o2.stop(n+.3);
+}
+
+function updateCameraBackground() {
+  if (!video || !canvas || !ctx || video.paused || video.ended) {
+    requestAnimationFrame(updateCameraBackground);
+    return;
+  }
+  
+  var caMain = document.getElementById('caMain');
+  if (!caMain || caMain.style.display === 'none') {
+    requestAnimationFrame(updateCameraBackground);
+    return;
+  }
+  
+  canvas.width = caMain.offsetWidth || 500;
+  canvas.height = caMain.offsetHeight || 500;
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(video, canvas.width, 0, -canvas.width, canvas.height);
+  
+  var imageData = canvas.toDataURL('image/jpeg', 0.8);
+  caMain.style.backgroundImage = 'url(' + imageData + ')';
+  caMain.style.backgroundSize = 'cover';
+  caMain.style.backgroundPosition = 'center';
+  
+  requestAnimationFrame(updateCameraBackground);
+}
+
+var D1_MASTER_R = [['上顎','正中','唇側','前歯','じょう がく せい ちゅう しん そく ぜ ん し ー','UR1 UR2 UR3 UL1 UL2 UL3'],['上顎','左側','頬側','小臼歯','じょう がく さ そく きょう そく しょう きゅう し ー','UL4 UL5'],['上顎','左側','頬側','大臼歯','じょう がく さ そく きょう そく だい きゅう し ー','UL6 UL7 UL8'],['上顎','右側','頬側','小臼歯','じょう がく う そく きょう そく しょう きゅう し ー','UR4 UR5'],['上顎','右側','頬側','大臼歯','じょう がく う そく きょう そく だい きゅう し ー','UR6 UR7 UR8'],['下顎','正中','唇側','前歯','か がく せい ちゅう しん そく ぜ ん し ー','LR1 LR2 LR3 LL1 LL2 LL3'],['下顎','左側','頬側','小臼歯','か がく さ そく きょう そく しょう きゅう し ー','LL4 LL5'],['下顎','左側','頬側','大臼歯','か がく さ そく きょう そく だい きゅう し ー','LL6 LL7 LL8'],['下顎','右側','頬側','小臼歯','か がく う そく きょう そく しょう きゅう し ー','LR4 LR5'],['下顎','右側','頬側','大臼歯','か がく う そく きょう そく だい きゅう し ー','LR6 LR7 LR8'],['上顎','正中','口蓋側','前歯','じょう がく せい ちゅう こうがい そく ぜ ん し ー','UR1 UR2 UR3 UL1 UL2 UL3'],['上顎','左側','口蓋側','小臼歯','じょう がく さ そく こうがい そく しょう きゅう し ー','UL4 UL5'],['上顎','左側','口蓋側','大臼歯','じょう がく さ そく こうがい そく だい きゅう し ー','UL6 UL7 UL8'],['上顎','右側','口蓋側','小臼歯','じょう がく う そく こうがい そく しょう きゅう し ー','UR4 UR5'],['上顎','右側','口蓋側','大臼歯','じょう がく う そく こうがい そく だい きゅう し ー','UR6 UR7 UR8'],['下顎','正中','舌側','前歯','か がく せい ちゅう ぜつ そく ぜ ん し ー','LR1 LR2 LR3 LL1 LL2 LL3'],['下顎','左側','舌側','小臼歯','か がく さ そく ぜつ そく しょう きゅう し ー','LL4 LL5'],['下顎','左側','舌側','大臼歯','か がく さ そく ぜつ そく だい きゅう し ー','LL6 LL7 LL8'],['下顎','右側','舌側','小臼歯','か がく う そく ぜつ そく しょう きゅう し ー','LR4 LR5'],['下顎','右側','舌側','大臼歯','か がく う そく ぜつ そく だい きゅう し ー','LR6 LR7 LR8'],['上顎','左側','臼歯部','咬合面','じょう がく さ そく きゅう しぶ こう ごう めー ん','UL4 UL5 UL6 UL7 UL8'],['上顎','右側','臼歯部','咬合面','じょう がく う そく きゅう しぶ こう ごう めー ん','UR4 UR5 UR6 UR7 UR8'],['下顎','左側','臼歯部','咬合面','か がく さ そく きゅう しぶ こう ごう めー ん','LL4 LL5 LL6 LL7 LL8'],['下顎','右側','臼歯部','咬合面','か がく う そく きゅう しぶ こう ごう めー ん','LR4 LR5 LR6 LR7 LR8']];
+
+var D1_MASTER_L = [['上顎','正中','唇側','前歯','じょう がく せい ちゅう しん そく ぜ ん し ー','UR1 UR2 UR3 UL1 UL2 UL3'],['上顎','右側','頬側','小臼歯','じょう がく う そく きょう そく しょう きゅう し ー','UR4 UR5'],['上顎','右側','頬側','大臼歯','じょう がく う そく きょう そく だい きゅう し ー','UR6 UR7 UR8'],['上顎','左側','頬側','小臼歯','じょう がく さ そく きょう そく しょう きゅう し ー','UL4 UL5'],['上顎','左側','頬側','大臼歯','じょう がく さ そく きょう そく だい きゅう し ー','UL6 UL7 UL8'],['下顎','正中','唇側','前歯','か がく せい ちゅう しん そく ぜ ん し ー','LR1 LR2 LR3 LL1 LL2 LL3'],['下顎','右側','頬側','小臼歯','か がく う そく きょう そく しょう きゅう し ー','LR4 LR5'],['下顎','右側','頬側','大臼歯','か がく う そく きょう そく だい きゅう し ー','LR6 LR7 LR8'],['下顎','左側','頬側','小臼歯','か がく さ そく きょう そく しょう きゅう し ー','LL4 LL5'],['下顎','左側','頬側','大臼歯','か がく さ そく きょう そく だい きゅう し ー','LL6 LL7 LL8'],['上顎','正中','口蓋側','前歯','じょう がく せい ちゅう こうがい そく ぜ ん し ー','UR1 UR2 UR3 UL1 UL2 UL3'],['上顎','右側','口蓋側','小臼歯','じょう がく う そく こうがい そく しょう きゅう し ー','UR4 UR5'],['上顎','右側','口蓋側','大臼歯','じょう がく う そく こうがい そく だい きゅう し ー','UR6 UR7 UR8'],['上顎','左側','口蓋側','小臼歯','じょう がく さ そく こうがい そく しょう きゅう し ー','UL4 UL5'],['上顎','左側','口蓋側','大臼歯','じょう がく さ そく こうがい そく だい きゅう し ー','UL6 UL7 UL8'],['下顎','正中','舌側','前歯','か がく せい ちゅう ぜつ そく ぜ ん し ー','LR1 LR2 LR3 LL1 LL2 LL3'],['下顎','右側','舌側','小臼歯','か がく う そく ぜつ そく しょう きゅう し ー','LR4 LR5'],['下顎','右側','舌側','大臼歯','か がく う そく ぜつ そく だい きゅう し ー','LR6 LR7 LR8'],['下顎','左側','舌側','小臼歯','か がく さ そく ぜつ そく しょう きゅう し ー','LL4 LL5'],['下顎','左側','舌側','大臼歯','か がく さ そく ぜつ そく だい きゅう し ー','LL6 LL7 LL8'],['上顎','右側','臼歯部','咬合面','じょう がく う そく きゅう しぶ こう ごう めー ん','UR4 UR5 UR6 UR7 UR8'],['上顎','左側','臼歯部','咬合面','じょう がく さ そく きゅう しぶ こう ごう めー ん','UL4 UL5 UL6 UL7 UL8'],['下顎','右側','臼歯部','咬合面','か がく う そく きゅう しぶ こう ごう めー ん','LR4 LR5 LR6 LR7 LR8'],['下顎','左側','臼歯部','咬合面','か がく さ そく きゅう しぶ こう ごう めー ん','LL4 LL5 LL6 LL7 LL8']];
+
+function buildD1_Right() { return D1_MASTER_R.filter(function(row) { return row[5].split(' ').filter(Boolean).some(function(id) { return !isMissing(id); }); }); }
+function buildD1_Left() { return D1_MASTER_L.filter(function(row) { return row[5].split(' ').filter(Boolean).some(function(id) { return !isMissing(id); }); }); }
+
+var NM = ['いち','にー','さん','よん','ごー','ろく','なな','はち'];
+
+function buildDI_Right() { var r = []; if (!isMissing('UR1') && !isMissing('UL1')) r.push(['いち ばん いち ばん', 'UR1 UL1']); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('UL'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','UL'+p[i]+' UL'+p[i+1]]); } })(); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('UR'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','UR'+p[i]+' UR'+p[i+1]]); } })(); if (!isMissing('LR1') && !isMissing('LL1')) r.push(['いち ばん いち ばん', 'LR1 LL1']); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('LL'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','LL'+p[i]+' LL'+p[i+1]]); } })(); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('LR'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','LR'+p[i]+' LR'+p[i+1]]); } })(); return r; }
+
+function buildDI_Left() { var r = []; if (!isMissing('UR1') && !isMissing('UL1')) r.push(['いち ばん いち ばん', 'UR1 UL1']); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('UR'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','UR'+p[i]+' UR'+p[i+1]]); } })(); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('UL'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','UL'+p[i]+' UL'+p[i+1]]); } })(); if (!isMissing('LR1') && !isMissing('LL1')) r.push(['いち ばん いち ばん', 'LR1 LL1']); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('LR'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','LR'+p[i]+' LR'+p[i+1]]); } })(); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('LL'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','LL'+p[i]+' LL'+p[i+1]]); } })(); return r; }
+
+function buildDW_Right() { var result = []; var NUMS = ['一','二','三','四','五','六','七','八']; var YOMI = ['い ち','に ー','さ ん','よ ん','ご ー','ろ く','な な','は ち']; var M = [['上顎','左側','口蓋側','一番','じょう がく さ そく こうがい そく い ち ば ん','UL1'],['上顎','左側','口蓋側','二番','じょう がく さ そく こうがい そく に ー ば ん','UL2'],['上顎','左側','口蓋側','三番','じょう がく さ そく こうがい そく さ ん ば ん','UL3'],['上顎','左側','口蓋側','四番','じょう がく さ そく こうがい そく よ ん ば ん','UL4'],['上顎','左側','口蓋側','五番','じょう がく さ そく こうがい そく ご ー ば ん','UL5'],['上顎','左側','口蓋側','六番','じょう がく さ そく こうがい そく ろ く ば ん','UL6'],['上顎','左側','口蓋側','七番','じょう がく さ そく こうがい そく な な ば ん','UL7'],['上顎','左側','口蓋側','八番','じょう がく さ そく こうがい そく は ち ば ん','UL8'],['上顎','右側','口蓋側','一番','じょう がく う そく こうがい そく い ち ば ん','UR1'],['上顎','右側','口蓋側','二番','じょう がく う そく こうがい そく に ー ば ん','UR2'],['上顎','右側','口蓋側','三番','じょう がく う そく こうがい そく さ ん ば ん','UR3'],['上顎','右側','口蓋側','四番','じょう がく う そく こうがい そく よ ん ば ん','UR4'],['上顎','右側','口蓋側','五番','じょう がく う そく こうがい そく ご ー ば ん','UR5'],['上顎','右側','口蓋側','六番','じょう がく う そく こうがい そく ろ く ば ん','UR6'],['上顎','右側','口蓋側','七番','じょう がく う そく こうがい そく な な ば ん','UR7'],['上顎','右側','口蓋側','八番','じょう がく う そく こうがい そく は ち ば ん','UR8'],['下顎','左側','舌側','一番','か がく さ そく ぜつ そく い ち ば ん','LL1'],['下顎','左側','舌側','二番','か がく さ そく ぜつ そく に ー ば ん','LL2'],['下顎','左側','舌側','三番','か がく さ そく ぜつ そく さ ん ば ん','LL3'],['下顎','左側','舌側','四番','か がく さ そく ぜつ そく よ ん ば ん','LL4'],['下顎','左側','舌側','五番','か がく さ そく ぜつ そく ご ー ば ん','LL5'],['下顎','左側','舌側','六番','か がく さ そく ぜつ そく ろ く ば ん','LL6'],['下顎','左側','舌側','七番','か がく さ そく ぜつ そく な な ば ん','LL7'],['下顎','左側','舌側','八番','か がく さ そく ぜつ そく は ち ば ん','LL8'],['下顎','右側','舌側','一番','か がく う そく ぜつ そく い ち ば ん','LR1'],['下顎','右側','舌側','二番','か がく う そく ぜつ そく に ー ば ん','LR2'],['下顎','右側','舌側','三番','か がく う そく ぜつ そく さ ん ば ん','LR3'],['下顎','右側','舌側','四番','か がく う そく ぜつ そく よ ん ば ん','LR4'],['下顎','右側','舌側','五番','か がく う そく ぜつ そく ご ー ば ん','LR5'],['下顎','右側','舌側','六番','か がく う そく ぜつ そく ろ く ば ん','LR6'],['下顎','右側','舌側','七番','か がく う そく ぜつ そく な な ば ん','LR7'],['下顎','右側','舌側','八番','か がく う そく ぜつ そく は ち ば ん','LR8'],['上顎','左側','頬側','八番','じょう がく さ そく きょう そく は ち ば ん','UL8'],['上顎','左側','頬側','七番','じょう がく さ そく きょう そく な な ば ん','UL7'],['上顎','左側','頬側','六番','じょう がく さ そく きょう そく ろ く ば ん','UL6'],['上顎','左側','頬側','五番','じょう がく さ そく きょう そく ご ー ば ん','UL5'],['上顎','左側','頬側','四番','じょう がく さ そく きょう そく よ ん ば ん','UL4'],['上顎','右側','頬側','八番','じょう がく う そく きょう そく は ち ば ん','UR8'],['上顎','右側','頬側','七番','じょう がく う そく きょう そく な な ば ん','UR7'],['上顎','右側','頬側','六番','じょう がく う そく きょう そく ろ く ば ん','UR6'],['上顎','右側','頬側','五番','じょう がく う そく きょう そく ご ー ば ん','UR5'],['上顎','右側','頬側','四番','じょう がく う そく きょう そく よ ん ば ん','UR4'],['下顎','左側','頬側','八番','か がく さ そく きょう そく は ち ば ん','LL8'],['下顎','左側','頬側','七番','か がく さ そく きょう そく な な ば ん','LL7'],['下顎','左側','頬側','六番','か がく さ そく きょう そく ろ く ば ん','LL6'],['下顎','左側','頬側','五番','か がく さ そく きょう そく ご ー ば ん','LL5'],['下顎','左側','頬側','四番','か がく さ そく きょう そく よ ん ば ん','LL4'],['下顎','右側','頬側','八番','か がく う そく きょう そく は ち ば ん','LR8'],['下顎','右側','頬側','七番','か がく う そく きょう そく な な ば ん','LR7'],['下顎','右側','頬側','六番','か がく う そく きょう そく ろ く ば ん','LR6'],['下顎','右側','頬側','五番','か がく う そく きょう そく ご ー ば ん','LR5'],['下顎','右側','頬側','四番','か がく う そく きょう そく よ ん ば ん','LR4']]; M.forEach(function(row) { if (!isMissing(row[5].trim())) result.push(row); }); var cols = [['上顎','左側','UL','じょう がく さ そく'],['上顎','右側','UR','じょう がく う そく'],['下顎','左側','LL','か がく さ そく'],['下顎','右側','LR','か がく う そく']]; cols.forEach(function(c) { for(var n=8;n>=1;n--) { if(isMissing(c[2]+n)) continue; if(n===8||isMissing(c[2]+(n+1))) result.push([c[0],c[1],'遠心',NUMS[n-1]+'番',c[3]+' えん しん '+YOMI[n-1]+' ば ん',c[2]+n]); } }); cols.forEach(function(c) { for(var n=2;n<=8;n++) { if(isMissing(c[2]+n)) continue; if(isMissing(c[2]+(n-1))) result.push([c[0],c[1],'近心',NUMS[n-1]+'番',c[3]+' きん しん '+YOMI[n-1]+' ば ん',c[2]+n]); } }); return result; }
+
+function buildDW_Left() { var result = []; var NUMS = ['一','二','三','四','五','六','七','八']; var YOMI = ['い ち','に ー','さ ん','よ ん','ご ー','ろ く','な な','は ち']; var M = [['上顎','右側','口蓋側','一番','じょう がく う そく こうがい そく い ち ば ん','UR1'],['上顎','右側','口蓋側','二番','じょう がく う そく こうがい そく に ー ば ん','UR2'],['上顎','右側','口蓋側','三番','じょう がく う そく こうがい そく さ ん ば ん','UR3'],['上顎','右側','口蓋側','四番','じょう がく う そく こうがい そく よ ん ば ん','UR4'],['上顎','右側','口蓋側','五番','じょう がく う そく こうがい そく ご ー ば ん','UR5'],['上顎','右側','口蓋側','六番','じょう がく う そく こうがい そく ろ く ば ん','UR6'],['上顎','右側','口蓋側','七番','じょう がく う そく こうがい そく な な ば ん','UR7'],['上顎','右側','口蓋側','八番','じょう がく う そく こうがい そく は ち ば ん','UR8'],['上顎','左側','口蓋側','一番','じょう がく さ そく こうがい そく い ち ば ん','UL1'],['上顎','左側','口蓋側','二番','じょう がく さ そく こうがい そく に ー ば ん','UL2'],['上顎','左側','口蓋側','三番','じょう がく さ そく こうがい そく さ ん ば ん','UL3'],['上顎','左側','口蓋側','四番','じょう がく さ そく こうがい そく よ ん ば ん','UL4'],['上顎','左側','口蓋側','五番','じょう がく さ そく こうがい そく ご ー ば ん','UL5'],['上顎','左側','口蓋側','六番','じょう がく さ そく こうがい そく ろ く ば ん','UL6'],['上顎','左側','口蓋側','七番','じょう がく さ そく こうがい そく な な ば ん','UL7'],['上顎','左側','口蓋側','八番','じょう がく さ そく こうがい そく は ち ば ん','UL8'],['下顎','右側','舌側','一番','か がく う そく ぜつ そく い ち ば ん','LR1'],['下顎','右側','舌側','二番','か がく う そく ぜつ そく に ー ば ん','LR2'],['下顎','右側','舌側','三番','か がく う そく ぜつ そく さ ん ば ん','LR3'],['下顎','右側','舌側','四番','か がく う そく ぜつ そく よ ん ば ん','LR4'],['下顎','右側','舌側','五番','か がく う そく ぜつ そく ご ー ば ん','LR5'],['下顎','右側','舌側','六番','か がく う そく ぜつ そく ろ く ば ん','LR6'],['下顎','右側','舌側','七番','か がく う そく ぜつ そく な な ば ん','LR7'],['下顎','右側','舌側','八番','か がく う そく ぜつ そく は ち ば ん','LR8'],['下顎','左側','舌側','一番','か がく さ そく ぜつ そく い ち ば ん','LL1'],['下顎','左側','舌側','二番','か がく さ そく ぜつ そく に ー ば ん','LL2'],['下顎','左側','舌側','三番','か がく さ そく ぜつ そく さ ん ば ん','LL3'],['下顎','左側','舌側','四番','か がく さ そく ぜつ そく よ ん ば ん','LL4'],['下顎','左側','舌側','五番','か がく さ そく ぜつ そく ご ー ば ん','LL5'],['下顎','左側','舌側','六番','か がく さ そく ぜつ そく ろ く ば ん','LL6'],['下顎','左側','舌側','七番','か がく さ そく ぜつ そく な な ば ん','LL7'],['下顎','左側','舌側','八番','か がく さ そく ぜつ そく は ち ば ん','LL8'],['上顎','右側','頬側','八番','じょう がく う そく きょう そく は ち ば ん','UR8'],['上顎','右側','頬側','七番','じょう がく う そく きょう そく な な ば ん','UR7'],['上顎','右側','頬側','六番','じょう がく う そく きょう そく ろ く ば ん','UR6'],['上顎','右側','頬側','五番','じょう がく う そく きょう そく ご ー ば ん','UR5'],['上顎','右側','頬側','四番','じょう がく う そく きょう そく よ ん ば ん','UR4'],['上顎','左側','頬側','八番','じょう がく さ そく きょう そく は ち ば ん','UL8'],['上顎','左側','頬側','七番','じょう がく さ そく きょう そく な な ば ん','UL7'],['上顎','左側','頬側','六番','じょう がく さ そく きょう そく ろ く ば ん','UL6'],['上顎','左側','頬側','五番','じょう がく さ そく きょう そく ご ー ば ん','UL5'],['上顎','左側','頬側','四番','じょう がく さ そく きょう そく よ ん ば ん','UL4'],['下顎','右側','頬側','八番','か がく う そく きょう そく は ち ば ん','LR8'],['下顎','右側','頬側','七番','か がく う そく きょう そく な な ば ん','LR7'],['下顎','右側','頬側','六番','か がく う そく きょう そく ろ く ば ん','LR6'],['下顎','右側','頬側','五番','か がく う そく きょう そく ご ー ば ん','LR5'],['下顎','右側','頬側','四番','か がく う そく きょう そく よ ん ば ん','LR4'],['下顎','左側','頬側','八番','か がく さ そく きょう そく は ち ば ん','LL8'],['下顎','左側','頬側','七番','か がく さ そく きょう そく な な ば ん','LL7'],['下顎','左側','頬側','六番','か がく さ そく きょう そく ろ く ば ん','LL6'],['下顎','左側','頬側','五番','か がく さ そく きょう そく ご ー ば ん','LL5'],['下顎','左側','頬側','四番','か がく さ そく きょう そく よ ん ば ん','LL4']]; M.forEach(function(row) { if (!isMissing(row[5].trim())) result.push(row); }); var cols = [['上顎','右側','UR','じょう がく う そく'],['上顎','左側','UL','じょう がく さ そく'],['下顎','右側','LR','か がく う そく'],['下顎','左側','LL','か がく さ そく']]; cols.forEach(function(c) { for(var n=8;n>=1;n--) { if(isMissing(c[2]+n)) continue; if(n===8||isMissing(c[2]+(n+1))) result.push([c[0],c[1],'遠心',NUMS[n-1]+'番',c[3]+' えん しん '+YOMI[n-1]+' ば ん',c[2]+n]); } }); cols.forEach(function(c) { for(var n=2;n<=8;n++) { if(isMissing(c[2]+n)) continue; if(isMissing(c[2]+(n-1))) result.push([c[0],c[1],'近心',NUMS[n-1]+'番',c[3]+' きん しん '+YOMI[n-1]+' ば ん',c[2]+n]); } }); return result; }
+
+function getAreaRounds() { return areaMode === 'thorough' ? 2 : 1; }
+function getAreaHand(round) { if (areaMode === 'standard') return handedness; if (areaMode === 'thorough') return handedness; return round === 1 ? handedness : (handedness === 'right' ? 'left' : 'right'); }
+function getInterHand() { return interMode === 'standard' ? handedness : (handedness === 'right' ? 'left' : 'right'); }
+function getWantapHand() { return wantapMode === 'standard' ? handedness : (handedness === 'right' ? 'left' : 'right'); }
+
+var uv=document.getElementById('uv'),nM=document.getElementById('nM'),nS=document.getElementById('nS'),nR=document.getElementById('nR'),tI=document.getElementById('tI'),sI=document.getElementById('sI'),rI=document.getElementById('rI'),bbF=document.getElementById('bbF'),bbT=document.getElementById('bbT'),caMain=document.getElementById('caMain'),ov=document.getElementById('ov'),oH=document.getElementById('oH'),oP=document.getElementById('oP'),oP2=document.getElementById('oP2'),p1=document.getElementById('p1'),p2=document.getElementById('p2'),p3=document.getElementById('p3');
+
+function sw() { uv.style.transform='rotate('+(ud*14)+'deg)'; ud*=-1; }
+function ru() { uv.style.transform='rotate(0deg)'; }
+function cH() { var x=document.querySelectorAll('.ta'); for(var i=0;i<x.length;i++) { var id=x[i].id; x[i].className.baseVal=isMissing(id)?'tm':'td'; } }
+function hT(ids) { cH(); for(var i=0;i<ids.length;i++) { var e=document.getElementById(ids[i]); if(e&&!isMissing(ids[i])) { e.classList.remove('td'); e.classList.add('ta'); } } }
+
+function fm(s) { return ('0'+Math.floor(s/60)).slice(-2)+':'+('0'+(s%60)).slice(-2); }
+function bpb() { return phase===2?6:10; }
+function totT() { var t=0; if(phase===1) { t=D.length*10*getAreaRounds(); } else if(phase===2) { t=DI.length*6; } else if(phase===3) { t=DW.length*10; } return fm(t); }
+function uBr(b) { if(phase===2) { bbF.setAttribute('height','0'); bbF.setAttribute('y','90'); bbT.textContent=''; return; } if(b<=0||b>9) { bbF.setAttribute('height','0'); bbF.setAttribute('y','90'); bbT.textContent=''; return; } if(b<=4) { var h=b*19; bbF.setAttribute('fill','#42a5f5'); bbF.setAttribute('y',''+(90-h)); bbF.setAttribute('height',''+h); bbT.textContent='吸'+b; } else { var x=b-4, h=76-Math.round(x*(76/6)); bbF.setAttribute('fill','#ef9a9a'); bbF.setAttribute('y',''+(90-h)); bbF.setAttribute('height',''+h); bbT.textContent='吐'+x; } }
+function getCurData() { return phase===1?D:phase===2?DI:DW; }
+
+function updateBlinkState(beat) { var allTa=document.querySelectorAll('.ta'); if(phase===2 && beat>=5&&beat<=6) { allTa.forEach(function(el){el.classList.add('strong');}); } else if(phase!==2 && beat>=7&&beat<=10) { allTa.forEach(function(el){el.classList.add('strong');}); } else { allTa.forEach(function(el){el.classList.remove('strong');}); } }
+
+function uD() { var cd=getCurData(); if(si>=cd.length) return; if(phase===2) { var s=cd[si], rd=s[0].split(' '); var ids=s[1].split(' ').filter(Boolean); nM.textContent=ids.join(' ⇔ '); nS.textContent='歯間磨き'; var t=''; for(var i=0;i<rd.length;i++) { if(i===bi-1&&bi>0) t+='【'+rd[i]+'】'; else t+=rd[i]; if(i<rd.length-1) t+=' '; } nR.textContent=t; hT(ids); sI.textContent=(si+1)+'/'+cd.length; rI.textContent=''; } else { var s=cd[si], rd=s[4].split(' '); nM.textContent=s[0]+'　'+s[1]; nS.textContent=s[2]+'　'+s[3]; var t=''; for(var i=0;i<rd.length;i++) { if(i===bi-1&&bi>0) t+='【'+rd[i]+'】'; else t+=rd[i]; if(i<rd.length-1) t+=' '; } nR.textContent=t; hT(s[5].split(' ').filter(Boolean)); var rounds=phase===1?getAreaRounds():1; sI.textContent=(si+1)+'/'+cd.length+(rounds>1?' ('+(areaRepeatCount+1)+'回目)':''); rI.textContent=rounds>1?(areaRepeatCount+1)+'回目 / '+rounds+'回':''; } tI.textContent=fm(el)+' / '+totT(); uBr(bi); updateBlinkState(bi); }
+
+function uD0() { var cd=getCurData(); if(cd.length===0) return; si=0; bi=0; if(phase===2) { var s=cd[0], ids=s[1].split(' ').filter(Boolean); nM.textContent=ids.join(' ⇔ '); nS.textContent='歯間磨き'; nR.textContent=s[0]; hT(ids); sI.textContent='1/'+cd.length; rI.textContent=''; } else { var s=cd[0]; nM.textContent=s[0]+'　'+s[1]; nS.textContent=s[2]+'　'+s[3]; nR.textContent=s[4].split(' ').join(' '); hT(s[5].split(' ').filter(Boolean)); var rounds=phase===1?getAreaRounds():1; sI.textContent='1/'+cd.length+(rounds>1?' ('+(areaRepeatCount+1)+'回目)':''); rI.textContent=rounds>1?(areaRepeatCount+1)+'回目 / '+rounds+'回':''; } tI.textContent='00:00 / '+totT(); uBr(0); updateBlinkState(0); }
+
+function onBeat() { if(!run) return; el++; bi++; var cb=bpb(), cd=getCurData(); if(bi>cb) { bi=1;
+if(phase===1 && areaMode==='thorough' && getAreaRounds()>1) {
+      areaRepeatCount++;
+      if(areaRepeatCount < getAreaRounds()) { mk(); sw(); uD(); return; }
+      areaRepeatCount=0;
+    }
+if(phase===1 && areaMode==='brain' && !isBrainSecondRound && si+1>=D.length) { isBrainSecondRound=true; el=0; D=(handedness==='right')?buildD1_Left():buildD1_Right(); si=0; areaRepeatCount=0; updateTabsForPhase(); showOvBrain(); return; } si++; if(si>=cd.length) { if(phase===1) { if(enabledPhases.inter) { phase=2; el=0; si=0; bi=0; DI=getInterHand()==='right'?buildDI_Right():buildDI_Left(); updateTabsForPhase(); showOvNext(); } else if(enabledPhases.wantap) { phase=3; el=0; si=0; bi=0; DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); updateTabsForPhase(); showOvNext(); } else finAll(); return; } if(phase===2) { if(enabledPhases.wantap) { phase=3; el=0; si=0; bi=0; DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); updateTabsForPhase(); showOvNext(); } else finAll(); return; } finAll(); return; } } if(phase===2 && bi>=5) { sw(); } else { mk(); sw(); } uD(); }
+
+function updateTabsForPhase() { p1.className=phase===1?'pi a':'pi'; p2.className=phase===2?'pi a':'pi'; p3.className=phase===3?'pi a':'pi'; }
+
+function showOvBrain() { run=false; clearInterval(iv); ru(); cH(); ovAct='next'; oH.textContent='非優位手に持ち替え'; oP.textContent=(handedness==='right'?'左手':'右手')+'で磨きます'; oP2.textContent=''; ov.classList.add('show'); }
+
+function showOvNext() { run=false; clearInterval(iv); ru(); cH(); ovAct='next'; if(phase===2) { oH.textContent='エリア磨き完了！'; oP.textContent='歯間ブラシに持ち替えてください'; oP2.textContent='歯間磨き（'+fm(DI.length*6)+'）に進みます'; } else if(phase===3) { oH.textContent='歯間磨き完了！'; oP.textContent='ワンタフトブラシに持ち替えてください'; oP2.textContent='ワンタフト磨き（'+fm(DW.length*10)+'）に進みます'; } ov.classList.add('show'); }
+
+function ovGo(){ov.classList.remove('show');run=true;document.getElementById('bP').textContent='⏸ 一時停止';playStartSound();uD0();iv=setInterval(onBeat,1000);}
+
+function gotoPhaseScreen(){saveSettings();document.getElementById('allModeScreen').style.display='none';currentPhaseIndex=0; updatePhaseScreen(); document.getElementById('phaseScreen').classList.add('show'); }
+
+function updatePhaseScreen() { var phaseInfo = { area: { icon: '🪥', name: 'エリア磨き', subtitle: '全体の基本になる磨き方です', brush: areaMode === 'standard' ? '通常ブラシ（1回）' : areaMode === 'thorough' ? '通常ブラシ（2回）' : '通常ブラシ（利き手＋非優位手）', time:buildD1_Right().length+' エリア'+(areaMode==='thorough'?' ×2回':areaMode==='brain'?' ×2（利き手＋非優位手）':''), content: 'すべてのエリアを系統的に磨きます' }, inter: { icon: '🔗', name: '歯間磨き', subtitle: '歯と歯の間を丁寧に磨きます', brush: interMode === 'standard' ? '歯間ブラシ（1回）' : '歯間ブラシ（非優位手）', time:buildDI_Right().length+' 歯間', content: '隣り合う歯と歯の間を集中的に磨きます' }, wantap: { icon: '🔍', name: 'ワンタフト磨き', subtitle: '細かい部分を丁寧に磨きます', brush: wantapMode === 'standard' ? 'ワンタフトブラシ（1回）' : 'ワンタフトブラシ（非優位手）', time:buildDW_Right().length+' スポット', content: '細かい凹凸や隙間を重点的に磨きます' } }; var current = phaseOrder[currentPhaseIndex]; if (!enabledPhases[current]) { currentPhaseIndex++; if (currentPhaseIndex >= phaseOrder.length) { document.getElementById('phaseScreen').classList.remove('show'); document.getElementById('allModeScreen').style.display = 'block'; return; } updatePhaseScreen(); return; } var info = phaseInfo[current]; document.getElementById('phaseIcon').textContent = info.icon; document.getElementById('phaseName').textContent = info.name; document.getElementById('phaseSubtitle').textContent = info.subtitle; document.getElementById('brushInfo').textContent = info.brush; document.getElementById('timeInfo').textContent = info.time; document.getElementById('contentInfo').textContent = info.content; document.getElementById('nextPhaseBtn').style.display=currentPhaseIndex<phaseOrder.length-1?'block':'none'; }
+
+function saveSettings(){try{localStorage.setItem('shaka2_settings',JSON.stringify({areaMode:areaMode,interMode:interMode,wantapMode:wantapMode,enabledPhases:enabledPhases}));}catch(e){};}
+function loadSettings(){try{var s=localStorage.getItem('shaka2_settings');if(!s)return false;var d=JSON.parse(s);areaMode=d.areaMode;interMode=d.interMode;wantapMode=d.wantapMode;enabledPhases=d.enabledPhases;return true;}catch(e){return false;}}
+function openInitSettings(){document.getElementById('allModeScreen').style.display='none';document.getElementById('hsScreen').classList.add('show');}
+function backToModeScreen(){document.getElementById('phaseScreen').classList.remove('show');document.getElementById('allModeScreen').style.display='block';}
+
+function prevPhase() { currentPhaseIndex--; if (currentPhaseIndex < 0) currentPhaseIndex = 0; updatePhaseScreen(); }
+
+function nextPhase() { currentPhaseIndex++; if (currentPhaseIndex >= phaseOrder.length) currentPhaseIndex = phaseOrder.length - 1; updatePhaseScreen(); }
+
+function startPhaseSession() { iA(); var current = phaseOrder[currentPhaseIndex]; if (current === 'area') phase = 1; else if (current === 'inter') phase = 2; else if (current === 'wantap') phase = 3; si=0; bi=0; el=0; areaRepeatCount=0; isBrainSecondRound=false; if(phase===1) { var h=getAreaHand(1); D=(h==='right')?buildD1_Right():buildD1_Left(); } else if(phase===2) { DI=getInterHand()==='right'?buildDI_Right():buildDI_Left(); } else { DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); } document.getElementById('phaseScreen').classList.remove('show'); caMain.style.display='block'; document.getElementById('tabArea').style.display='flex'; document.getElementById('mainCtrl').style.display='flex'; updateTabsForPhase(); nM.textContent='準備してください…'; nS.textContent='木魚のリズムに委ねましょう'; nR.textContent=''; rI.textContent=''; bbF.setAttribute('height','0'); bbT.textContent=''; updateCameraBackground();run=true;document.getElementById('bP').textContent='⏸ 一時停止';playStartSound(); setTimeout(function() { if(!run) return; uD0(); iv=setInterval(onBeat,1000); }, 1000); }
+
+function pa(){run=!run;document.getElementById('bP').textContent=run?'⏸ 一時停止':'▶ 再開';if(run){iv=setInterval(onBeat,1000);}else{clearInterval(iv);ru();}}
+
+function backToPhaseScreen(){run=false;clearInterval(iv);ru();cH();caMain.style.display='none';document.getElementById('tabArea').style.display='none';document.getElementById('mainCtrl').style.display='none';document.getElementById('bP').textContent='⏸ 一時停止';updatePhaseScreen();document.getElementById('phaseScreen').classList.add('show');}
+
+function st() { run=false; clearInterval(iv); ru(); cH(); document.getElementById('allModeScreen').style.display='block'; caMain.style.display='none'; document.getElementById('tabArea').style.display='none'; document.getElementById('mainCtrl').style.display='none'; nM.textContent='お疲れさまでした'; nS.textContent=fm(el)+' 磨きました'; }
+
+function finAll() { run=false; clearInterval(iv); ru(); cH(); nM.textContent='🙏 完了！'; nS.textContent=({1:'エリア磨き',2:'歯間磨き',3:'ワンタフト磨き'})[phase]+'完了（'+fm(el)+'）'; nR.textContent=''; sI.textContent=''; rI.textContent=''; bbF.setAttribute('height','0'); bbT.textContent=''; setTimeout(function(){if(AC){for(var i=0;i<3;i++)(function(j){setTimeout(mk,j*400)})(i);}},500); setTimeout(function(){document.getElementById('allModeScreen').style.display='block';caMain.style.display='none';document.getElementById('tabArea').style.display='none';document.getElementById('mainCtrl').style.display='none';},3000); }
+
+loadHandedness();loadMs();
+function updatePhaseInfo(){}
+function restoreUI(){if(loadSettings()){document.getElementById('allModeScreen').style.display='block';syncMainSvg();restoreModeCards();}else{document.getElementById('hsScreen').classList.add('show');};}
+function restoreModeCards(){document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){e.classList.toggle('selected',i===(areaMode==='standard'?0:areaMode==='thorough'?1:2));});document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){e.classList.toggle('selected',interMode==='standard'?i===0:i===1);});document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){e.classList.toggle('selected',wantapMode==='standard'?i===0:i===1);});document.querySelectorAll('.phaseBtn').forEach(function(btn){var pt=btn.getAttribute('data-phase');btn.classList.toggle('active',enabledPhases[pt]);});updateCompleteBtn();}
+restoreUI();
+</script>
+</body>
+</html>

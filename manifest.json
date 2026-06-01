@@ -1,0 +1,19 @@
+{
+  "name": "Shaka2瞑想",
+  "short_name": "Shaka2",
+  "description": "反転ミラー搭載の心身調律歯磨きアプリ",
+  "start_url": "./shaka2-18_PWA.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1a1a2e",
+  "theme_color": "#0f3460",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCBmaWxsPSIjMGYzNDYwIiB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjQ1Ii8+PHRleHQgeD0iOTYiIHk9IjEzMCIgZm9udC1zaXplPSIxMDAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmZkNzAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wkIi7PC90ZXh0Pjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
