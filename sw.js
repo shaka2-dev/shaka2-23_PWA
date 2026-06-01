@@ -1,7 +1,7 @@
-const CACHE_NAME = 'shaka2-pwa-v3';
+const CACHE_NAME = 'shaka2-pwa-v4';
 const ASSETS_TO_CACHE = [
   './',
-  './shaka2-18_PWA.html',
+  './index.html',
   './manifest.json'
 ];
 
@@ -48,7 +48,7 @@ self.addEventListener('fetch', event => {
         return response;
       });
     }).catch(() => {
-      return caches.match('./shaka2-18_PWA.html');
+      return caches.match('./index.html');
     })
   );
 });
