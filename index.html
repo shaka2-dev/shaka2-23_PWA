@@ -384,9 +384,21 @@ var video = null;
 var canvas = null;
 var ctx = null;
 var currentStream = null;
+  
+function stopCamera() {
+  if (currentStream) {
+    currentStream.getTracks().forEach(track => track.stop());
+    currentStream = null;
+  }
+  if (video) {
+    video.srcObject = null;
+  }
+}
 
 function initCameraImmediately() {
   console.log('カメラ初期化開始...');
+  
+  stopCamera();
   
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
@@ -418,6 +430,8 @@ if (document.readyState === 'loading') {
 } else {
   initCameraImmediately();
 }
+
+window.addEventListener('beforeunload', stopCamera);
 
 var handedness = 'right';
 var areaMode = null;
