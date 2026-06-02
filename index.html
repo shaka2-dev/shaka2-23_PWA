@@ -455,7 +455,7 @@ function saveMs() { try { localStorage.setItem('shaka2_missing', JSON.stringify(
 function isMissing(id) { return !!missingTeeth[id]; }
 function syncMsSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById('ms_' + id); if (e) e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); syncMainSvg(); }
 function syncMainSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById(id); if (!e) return; if (e.classList.contains('ta')) return; e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); }
-function updateMsText() { var el2 = document.getElementById('msMissing'); var keys = Object.keys(missingTeeth).filter(function(k) { return missingTeeth[k]; }); if (keys.length === 0) { el2.textContent = '欠損歯なし'; } else { var names = keys.map(function(id) { return (id[0]==='U'?'上顎':'下顎')+(id[1]==='R'?'右側':'左側')+id.slice(2)+'番'; }); el2.textContent = '欠損：' + names.join('　'); } }
+function updateMsText() {  }
 function tgMs(id) { if (missingTeeth[id]) delete missingTeeth[id]; else missingTeeth[id] = true; syncMsSvg(); }
 function msClear() { missingTeeth = {}; syncMsSvg(); updateMsText(); }
 function msSave() { saveMs(); document.getElementById('msScreen').classList.remove('show'); document.getElementById('allModeScreen').style.display = 'block'; }
