@@ -17,7 +17,7 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .pi.a{background:#0f3460;color:#ffd700;font-weight:bold}
 .pi.d{background:#1b5e20;color:#a5d6a7}
 .ca{width:100%;background:#16213e;border-radius:10px;padding:6px;position:relative;overflow:hidden}
-.ca::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-size:cover;background-position:center;z-index:0;transform:scaleX(-1)}
+.ca #bgVideo{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .ca > *{position:relative;z-index:1}
 .nd{text-align:center;margin-bottom:4px;position:relative;z-index:10}
 .nm{font-size:1.35rem;font-weight:bold;color:#ffd700;min-height:1.3em}
@@ -546,37 +546,25 @@ function mk() {
 }
 
 function updateCameraBackground() {
-  if (!video || !canvas || !ctx || video.paused || video.ended) {
-    requestAnimationFrame(updateCameraBackground);
-    return;
-  }
-  
   var caMain = document.getElementById('caMain');
-  if (!caMain || caMain.style.display === 'none') {
-    requestAnimationFrame(updateCameraBackground);
-    return;
-  }
+  if (!caMain || caMain.style.display === 'none') return;
   
-  try {
-    canvas.width = video.videoWidth || caMain.offsetWidth || 500;
-    canvas.height = video.videoHeight || caMain.offsetHeight || 500;
+  if (!caMain.dataset.videoSetup) {
+    var bgVideo = document.createElement('video');
+    bgVideo.id = 'bgVideo';
+    bgVideo.autoplay = true;
+    bgVideo.playsInline = true;
+    bgVideo.muted = true;
+    bgVideo.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:0;';
     
-    ctx.filter = 'none';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    caMain.style.position = 'relative';
+    caMain.insertBefore(bgVideo, caMain.firstChild);
     
-    ctx.save();
-    ctx.scale(-1, 1);
-    ctx.translate(-canvas.width, 0);
-    ctx.drawImage(video, 0, 0);
-    ctx.restore();
+    if (currentStream) {
+      bgVideo.srcObject = currentStream;
+    }
     
-    var imageData = canvas.toDataURL('image/jpeg', 0.7);
-    caMain.style.backgroundImage = 'url(' + imageData + ')';
-    caMain.style.backgroundSize = 'cover';
-    caMain.style.backgroundPosition = 'center';
-    
-  } catch(e) {
-    console.error('Canvas error:', e);
+    caMain.dataset.videoSetup = 'true';
   }
   
   requestAnimationFrame(updateCameraBackground);
