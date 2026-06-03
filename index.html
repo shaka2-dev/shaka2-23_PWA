@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ★★★ Shaka2瞑想 修正版18（最終版） ★★★ -->
+<!-- ★★★ Shaka2瞑想 修正版19（Opus診断対応・カメラ完全修正） ★★★ -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -60,6 +60,10 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .mo label:hover{border-color:#ffd700;background:#333350}
 .mo input[type=radio]{margin-right:8px;accent-color:#ffd700}
 .mo .sub{font-size:.65rem;color:#888;margin-left:22px;margin-top:2px}
+
+.mo label:hover{border-color:#ffd700;background:#333350}
+.mo input[type=radio]{margin-right:8px;accent-color:#ffd700}
+.mo .sub{font-size:.65rem;color:#888;margin-left:22px;margin-top:2px}
 .ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(22,33,62,.95);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;overflow-y:auto}
 .ov.show{display:flex}
 .ov h2{color:#e8d5b7;font-size:1.2rem;margin-bottom:10px}
@@ -102,6 +106,9 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .phaseHeader{width:100%;max-width:500px;background:linear-gradient(135deg,#16213e,#0f3460);padding:20px;border-radius:12px;margin-bottom:20px;text-align:center}
 .phaseHeader h2{color:#e8d5b7;font-size:1.4rem;margin-bottom:10px;letter-spacing:.1em}
 .phaseIcon{font-size:3rem;margin-bottom:10px}
+.phaseInfo{display:flex;flex-direction:column;gap:15px;width:100%;max-width:500px;margin-bottom:30px}
+.phaseInfoBox{background:#16213e;padding:15px;border-radius:10px;text-align:left}
+
 .phaseInfo{display:flex;flex-direction:column;gap:15px;width:100%;max-width:500px;margin-bottom:30px}
 .phaseInfoBox{background:#16213e;padding:15px;border-radius:10px;text-align:left}
 .phaseInfoBox h3{color:#ffd700;font-size:.95rem;margin-bottom:8px}
@@ -342,8 +349,7 @@ if ('serviceWorker' in navigator) {
       <line x1="100" y1="12" x2="100" y2="180" stroke="#ffffff" stroke-width="0.8"/>
       <text x="20" y="96" style="font-size:12px;font-weight:bold;fill:#ff8a65;text-anchor:middle">右</text>
       <text x="180" y="96" style="font-size:12px;font-weight:bold;fill:#4fc3f7;text-anchor:middle">左</text>
-
-      <g class="uvG" id="uv">
+<g class="uvG" id="uv">
         <path d="M100,76 L100,84" stroke="#d4a0a0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
         <path d="M100,83 C96,87 94,92 94.5,96 C95,99 97,101.5 100,102.5 C103,101.5 105,99 105.5,96 C106,92 104,87 100,83Z" fill="url(#uvGr)"/>
       </g>
@@ -377,14 +383,15 @@ if ('serviceWorker' in navigator) {
 </div>
 
 </div>
-<footer>★ Shaka2瞑想 修正版18（最終版・完成） ★ 鳥井式心身調律歯磨き法</footer>
+<footer>★ Shaka2瞑想 修正版19（Opus診断対応・カメラ完全修正） ★ 鳥井式心身調律歯磨き法</footer>
 
 <script>
 var video = null;
 var canvas = null;
 var ctx = null;
 var currentStream = null;
-  
+
+// ★修正1：stopCamera() - bgVideo 完全解放
 function stopCamera() {
   if (currentStream) {
     currentStream.getTracks().forEach(track => track.stop());
@@ -393,15 +400,25 @@ function stopCamera() {
   if (video) {
     video.srcObject = null;
   }
+  // ★修正：bgVideo も解放
+  var bgVideo = document.getElementById('bgVideo');
+  if (bgVideo) {
+    bgVideo.srcObject = null;
+    bgVideo.parentNode.removeChild(bgVideo);
+  }
+  // ★修正：セットアップフラグリセット
+  var caMain = document.getElementById('caMain');
+  if (caMain) {
+    delete caMain.dataset.videoSetup;
+  }
 }
 
+// ★修正2：initCameraImmediately() - Canvas 廃止、フレームレート制約追加
 function initCameraImmediately() {
   console.log('カメラ初期化開始...');
-  
   stopCamera();
-  
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    const constraints = {
+    var constraints = {
       video: {
         facingMode: 'user',
         width: { ideal: 640 },
@@ -410,30 +427,14 @@ function initCameraImmediately() {
       },
       audio: false
     };
-    
     navigator.mediaDevices.getUserMedia(constraints)
       .then(function(stream) {
         console.log('カメラ許可取得 - ストリーム開始');
         currentStream = stream;
-        
-        if (!video) {
-          video = document.createElement('video');
-          video.style.display = 'none';
-          video.setAttribute('playsinline', '');
-          video.setAttribute('webkit-playsinline', '');
-          document.body.appendChild(video);
-        }
-        
-        video.srcObject = stream;
-        video.onloadedmetadata = function() {
-          video.play().catch(err => console.error('play error:', err));
-        };
-        
-        if (!canvas) {
-          canvas = document.createElement('canvas');
-          canvas.style.display = 'none';
-          ctx = canvas.getContext('2d', { alpha: false, willReadFrequently: false });
-          document.body.appendChild(canvas);
+        // ★修正：bgVideo が既に存在すれば再接続
+        var bgVideo = document.getElementById('bgVideo');
+        if (bgVideo) {
+          bgVideo.srcObject = stream;
         }
       })
       .catch(function(err) {
@@ -545,6 +546,7 @@ function mk() {
   o2.connect(g2); g2.connect(AC.destination); o2.start(n); o2.stop(n+.3);
 }
 
+// ★修正3：updateCameraBackground() - Video 直接表示、requestAnimationFrame 継続（タブ復帰対応）
 function updateCameraBackground() {
   var caMain = document.getElementById('caMain');
   if (!caMain || caMain.style.display === 'none') return;
@@ -555,6 +557,8 @@ function updateCameraBackground() {
     bgVideo.autoplay = true;
     bgVideo.playsInline = true;
     bgVideo.muted = true;
+    bgVideo.setAttribute('playsinline', '');
+    bgVideo.setAttribute('webkit-playsinline', '');
     bgVideo.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);z-index:0;';
     
     caMain.style.position = 'relative';
@@ -631,7 +635,7 @@ function gotoPhaseScreen(){saveSettings();document.getElementById('allModeScreen
 
 function updatePhaseScreen() { var phaseInfo = { area: { icon: '🪥', name: 'エリア磨き', subtitle: '全体の基本になる磨き方です', brush: areaMode === 'standard' ? '通常ブラシ（1回）' : areaMode === 'thorough' ? '通常ブラシ（2回）' : '通常ブラシ（利き手＋非優位手）', time:buildD1_Right().length+' エリア'+(areaMode==='thorough'?' ×2回':areaMode==='brain'?' ×2（利き手＋非優位手）':''), content: 'すべてのエリアを系統的に磨きます' }, inter: { icon: '🔗', name: '歯間磨き', subtitle: '歯と歯の間を丁寧に磨きます', brush: interMode === 'standard' ? '歯間ブラシ（1回）' : '歯間ブラシ（非優位手）', time:buildDI_Right().length+' 歯間', content: '隣り合う歯と歯の間を集中的に磨きます' }, wantap: { icon: '🔍', name: 'ワンタフト磨き', subtitle: '細かい部分を丁寧に磨きます', brush: wantapMode === 'standard' ? 'ワンタフトブラシ（1回）' : 'ワンタフトブラシ（非優位手）', time:buildDW_Right().length+' スポット', content: '細かい凹凸や隙間を重点的に磨きます' } }; var current = phaseOrder[currentPhaseIndex]; if (!enabledPhases[current]) { currentPhaseIndex++; if (currentPhaseIndex >= phaseOrder.length) { document.getElementById('phaseScreen').classList.remove('show'); document.getElementById('allModeScreen').style.display = 'block'; return; } updatePhaseScreen(); return; } var info = phaseInfo[current]; document.getElementById('phaseIcon').textContent = info.icon; document.getElementById('phaseName').textContent = info.name; document.getElementById('phaseSubtitle').textContent = info.subtitle; document.getElementById('brushInfo').textContent = info.brush; document.getElementById('timeInfo').textContent = info.time; document.getElementById('contentInfo').textContent = info.content; document.getElementById('nextPhaseBtn').style.display=currentPhaseIndex<phaseOrder.length-1?'block':'none'; }
 
-function saveSettings(){try{localStorage.setItem('shaka2_settings',JSON.stringify({areaMode:areaMode,interMode:interMode,wantapMode:wantapMode,enabledPhases:enabledPhases}));}catch(e){};}
+function saveSettings(){try{localStorage.setItem('shaka2_settings',JSON.stringify({areaMode:areaMode,interMode:interMode,wantapMode:wantapMode,enabledPhases:enabledPhases}));}catch(e){};  }
 function loadSettings(){try{var s=localStorage.getItem('shaka2_settings');if(!s)return false;var d=JSON.parse(s);areaMode=d.areaMode;interMode=d.interMode;wantapMode=d.wantapMode;enabledPhases=d.enabledPhases;return true;}catch(e){return false;}}
 function openInitSettings(){document.getElementById('allModeScreen').style.display='none';document.getElementById('hsScreen').classList.add('show');}
 function backToModeScreen(){document.getElementById('phaseScreen').classList.remove('show');document.getElementById('allModeScreen').style.display='block';}
@@ -642,15 +646,81 @@ function nextPhase() { currentPhaseIndex++; if (currentPhaseIndex >= phaseOrder.
 
 function startPhaseSession() { iA(); var current = phaseOrder[currentPhaseIndex]; if (current === 'area') phase = 1; else if (current === 'inter') phase = 2; else if (current === 'wantap') phase = 3; si=0; bi=0; el=0; areaRepeatCount=0; isBrainSecondRound=false; if(phase===1) { var h=getAreaHand(1); D=(h==='right')?buildD1_Right():buildD1_Left(); } else if(phase===2) { DI=getInterHand()==='right'?buildDI_Right():buildDI_Left(); } else { DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); } document.getElementById('phaseScreen').classList.remove('show'); caMain.style.display='block'; document.getElementById('tabArea').style.display='flex'; document.getElementById('mainCtrl').style.display='flex'; updateTabsForPhase(); nM.textContent='準備してください…'; nS.textContent='木魚のリズムに委ねましょう'; nR.textContent=''; rI.textContent=''; bbF.setAttribute('height','0'); bbT.textContent=''; updateCameraBackground();run=true;document.getElementById('bP').textContent='⏸ 一時停止';playStartSound(); setTimeout(function() { if(!run) return; uD0(); iv=setInterval(onBeat,1000); }, 1000); }
 
+// ★修正8：pa() 関数 - 重複定義削除（1つだけ残す）
 function pa(){run=!run;document.getElementById('bP').textContent=run?'⏸ 一時停止':'▶ 再開';if(run){iv=setInterval(onBeat,1000);}else{clearInterval(iv);ru();}}
 
-function backToPhaseScreen(){run=false;clearInterval(iv);ru();cH();caMain.style.display='none';document.getElementById('tabArea').style.display='none';document.getElementById('mainCtrl').style.display='none';document.getElementById('bP').textContent='⏸ 一時停止';updatePhaseScreen();document.getElementById('phaseScreen').classList.add('show');}
+// ★修正5：backToPhaseScreen() に stopCamera() 追加
+function backToPhaseScreen(){
+  run=false;
+  clearInterval(iv);
+  stopCamera();  // ★修正：カメラ完全停止
+  ru();
+  cH();
+  caMain.style.display='none';
+  document.getElementById('tabArea').style.display='none';
+  document.getElementById('mainCtrl').style.display='none';
+  document.getElementById('bP').textContent='⏸ 一時停止';
+  updatePhaseScreen();
+  document.getElementById('phaseScreen').classList.add('show');
+}
 
-function st() { run=false; clearInterval(iv); ru(); cH(); document.getElementById('allModeScreen').style.display='block'; caMain.style.display='none'; document.getElementById('tabArea').style.display='none'; document.getElementById('mainCtrl').style.display='none'; nM.textContent='お疲れさまでした'; nS.textContent=fm(el)+' 磨きました'; }
+// ★修正6：st() に stopCamera() 追加
+function st() { 
+  run=false; 
+  clearInterval(iv); 
+  stopCamera();  // ★修正：カメラ完全停止
+  ru(); 
+  cH(); 
+  document.getElementById('allModeScreen').style.display='block'; 
+  caMain.style.display='none'; 
+  document.getElementById('tabArea').style.display='none'; 
+  document.getElementById('mainCtrl').style.display='none'; 
+  nM.textContent='お疲れさまでした'; 
+  nS.textContent=fm(el)+' 磨きました'; 
+}
 
-function finAll() { run=false; clearInterval(iv); ru(); cH(); nM.textContent='🙏 完了！'; nS.textContent=({1:'エリア磨き',2:'歯間磨き',3:'ワンタフト磨き'})[phase]+'完了（'+fm(el)+'）'; nR.textContent=''; sI.textContent=''; rI.textContent=''; bbF.setAttribute('height','0'); bbT.textContent=''; setTimeout(function(){if(AC){for(var i=0;i<3;i++)(function(j){setTimeout(mk,j*400)})(i);}},500); setTimeout(function(){document.getElementById('allModeScreen').style.display='block';caMain.style.display='none';document.getElementById('tabArea').style.display='none';document.getElementById('mainCtrl').style.display='none';},3000); }
+// ★修正7：finAll() に stopCamera() 追加
+function finAll() { 
+  run=false; 
+  clearInterval(iv); 
+  stopCamera();  // ★修正：カメラ完全停止
+  ru(); 
+  cH(); 
+  nM.textContent='🙏 完了！'; 
+  nS.textContent=({1:'エリア磨き',2:'歯間磨き',3:'ワンタフト磨き'})[phase]+'完了（'+fm(el)+'）'; 
+  nR.textContent=''; 
+  sI.textContent=''; 
+  rI.textContent=''; 
+  bbF.setAttribute('height','0'); 
+  bbT.textContent=''; 
+  setTimeout(function(){if(AC){for(var i=0;i<3;i++)(function(j){setTimeout(mk,j*400)})(i);}},500); 
+  setTimeout(function(){document.getElementById('allModeScreen').style.display='block';caMain.style.display='none';document.getElementById('tabArea').style.display='none';document.getElementById('mainCtrl').style.display='none';},3000); 
+}
 
-loadHandedness();loadMs();
+loadHandedness();
+loadMs();
+
+// ★修正4：visibilitychange ハンドラ追加
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    if (currentStream) {
+      var tracks = currentStream.getVideoTracks();
+      if (tracks.length === 0 || tracks[0].readyState === 'ended') {
+        console.log('ストリーム切断検知 - 再初期化');
+        stopCamera();
+        setTimeout(initCameraImmediately, 300);
+      } else {
+        var bgVideo = document.getElementById('bgVideo');
+        if (bgVideo && bgVideo.paused) {
+          bgVideo.play().catch(function(e) { console.log('bgVideo再開失敗:', e); });
+        }
+      }
+    } else {
+      setTimeout(initCameraImmediately, 300);
+    }
+  }
+});
+
 function updatePhaseInfo(){}
 function restoreUI(){
   if(loadSettings()){
@@ -660,11 +730,25 @@ function restoreUI(){
   }else{
     document.getElementById('hsScreen').classList.add('show');
   };
-  
-  stopCamera();
-  setTimeout(initCameraImmediately, 300);
 }
-function restoreModeCards(){document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){e.classList.toggle('selected',i===(areaMode==='standard'?0:areaMode==='thorough'?1:2));});document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){e.classList.toggle('selected',interMode==='standard'?i===0:i===1);});document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){e.classList.toggle('selected',wantapMode==='standard'?i===0:i===1);});document.querySelectorAll('.phaseBtn').forEach(function(btn){var pt=btn.getAttribute('data-phase');btn.classList.toggle('active',enabledPhases[pt]);});updateCompleteBtn();}
+
+function restoreModeCards(){
+  document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){
+    e.classList.toggle('selected',i===(areaMode==='standard'?0:areaMode==='thorough'?1:2));
+  });
+  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){
+    e.classList.toggle('selected',interMode==='standard'?i===0:i===1);
+  });
+  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){
+    e.classList.toggle('selected',wantapMode==='standard'?i===0:i===1);
+  });
+  document.querySelectorAll('.phaseBtn').forEach(function(btn){
+    var pt=btn.getAttribute('data-phase');
+    btn.classList.toggle('active',enabledPhases[pt]);
+  });
+  updateCompleteBtn();
+}
+
 restoreUI();
 </script>
 </body>
