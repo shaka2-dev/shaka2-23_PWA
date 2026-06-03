@@ -652,7 +652,18 @@ function finAll() { run=false; clearInterval(iv); ru(); cH(); nM.textContent='ðŸ
 
 loadHandedness();loadMs();
 function updatePhaseInfo(){}
-function restoreUI(){if(loadSettings()){document.getElementById('allModeScreen').style.display='block';syncMainSvg();restoreModeCards();}else{document.getElementById('hsScreen').classList.add('show');};}
+function restoreUI(){
+  if(loadSettings()){
+    document.getElementById('allModeScreen').style.display='block';
+    syncMainSvg();
+    restoreModeCards();
+  }else{
+    document.getElementById('hsScreen').classList.add('show');
+  };
+  
+  stopCamera();
+  setTimeout(initCameraImmediately, 300);
+}
 function restoreModeCards(){document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){e.classList.toggle('selected',i===(areaMode==='standard'?0:areaMode==='thorough'?1:2));});document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){e.classList.toggle('selected',interMode==='standard'?i===0:i===1);});document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){e.classList.toggle('selected',wantapMode==='standard'?i===0:i===1);});document.querySelectorAll('.phaseBtn').forEach(function(btn){var pt=btn.getAttribute('data-phase');btn.classList.toggle('active',enabledPhases[pt]);});updateCompleteBtn();}
 restoreUI();
 </script>
