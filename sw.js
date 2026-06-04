@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shaka2-pwa-v6';
+const CACHE_NAME = 'shaka2-pwa-v7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
