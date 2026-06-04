@@ -1,7 +1,7 @@
 {
   "name": "Shaka2瞑想",
   "short_name": "Shaka2",
-  "description": "反転ミラー搭載の心身調律歯磨きアプリ",
+  "description": "NHK時報スタイル・心身調律歯磨きアプリ",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
