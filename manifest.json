@@ -1,19 +1,72 @@
 {
-  "name": "Shaka2瞑想",
-  "short_name": "Shaka2",
-  "description": "NHK時報スタイル・心身調律歯磨きアプリ",
+  "name": "Shaka2瞑想 - NHK時報スタイル心身調律歯磨き法",
+  "short_name": "Shaka2瞑想",
+  "description": "NHK時報のリズムで自分のペースにぴったり合わせた、心身調律歯磨きアプリ。利き手・非優位手切り替え、欠損歯登録対応。",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#1a1a2e",
   "theme_color": "#0f3460",
+  "categories": ["health", "utilities"],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'%3E%3Crect fill='%231a1a2e' width='540' height='720'/%3E%3Crect fill='%23160d2b' width='540' height='80'/%3E%3Ctext x='270' y='50' font-size='32' text-anchor='middle' fill='%23e8d5b7'%3ESHAKa2瞑想%3C/text%3E%3Crect x='40' y='140' width='460' height='520' rx='20' fill='%2316213e'/%3E%3Ctext x='270' y='250' font-size='48' text-anchor='middle' fill='%23ffd700'%3E🪥%3C/text%3E%3Ctext x='270' y='320' font-size='24' text-anchor='middle' fill='%2380cbc4'%3Eエリア磨き%3C/text%3E%3C/svg%3E",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%230f3460' width='192' height='192' rx='45'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle' fill='%23ffd700'%3E🦷%3C/text%3E%3C/svg%3E",
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%230f3460' width='192' height='192' rx='45'/%3E%3Ctext x='96' y='145' font-size='120' text-anchor='middle' fill='%23ffd700'%3E🦷%3C/text%3E%3C/svg%3E",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%230f3460' width='512' height='512' rx='120'/%3E%3Ctext x='256' y='390' font-size='320' text-anchor='middle' fill='%23ffd700'%3E🦷%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "エリア磨き",
+      "short_name": "エリア",
+      "description": "エリア磨きを開始",
+      "url": "./index.html?mode=area",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect fill='%230f3460' width='96' height='96' rx='20'/%3E%3Ctext x='48' y='72' font-size='60' text-anchor='middle' fill='%23ffd700'%3E🪥%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "歯間磨き",
+      "short_name": "歯間",
+      "description": "歯間磨きを開始",
+      "url": "./index.html?mode=inter",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect fill='%230f3460' width='96' height='96' rx='20'/%3E%3Ctext x='48' y='72' font-size='60' text-anchor='middle' fill='%234fc3f7'%3E🔗%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "./share",
+    "method": "POST",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }
