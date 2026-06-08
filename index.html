@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ★★★ Shaka2瞑想 修正版20（NHK時報スタイル・カメラ反転復旧版） ★★★ -->
+<!-- ★★★ Shaka2瞑想 修正版23（完成版・モード切り替えトグル化） ★★★ -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -22,16 +22,7 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .nd{text-align:center;margin-bottom:4px;position:relative;z-index:10}
 .nm{font-size:1.35rem;font-weight:bold;color:#ffd700;min-height:1.3em}
 .ns{font-size:1rem;color:#80cbc4;margin-top:2px}
-.nr{
-  font-size:.95rem;
-  color:#ffffff;
-  margin-top:2px;
-  letter-spacing:.15em;
-  background-color:#000000;
-  padding:6px 12px;
-  border-radius:6px;
-  display:inline-block;
-}
+.nr{font-size:.95rem;color:#ffffff;margin-top:2px;letter-spacing:.15em;background-color:#000000;padding:6px 12px;border-radius:6px;display:inline-block}
 .ti{font-size:.8rem;color:#80cbc4;margin-top:3px}
 .ri{font-size:.7rem;color:#ffab40;text-align:center;font-weight:bold}
 .sc{width:100%;display:flex;justify-content:center;position:relative;height:240px}
@@ -52,18 +43,16 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .bx{background:linear-gradient(135deg,#f44336,#c62828);color:#fff}
 .bp{background:linear-gradient(135deg,#ff9800,#e65100);color:#fff}
 .bb{background:linear-gradient(135deg,#9c27b0,#6a1b9a);color:#fff}
-.md{width:100%;background:#16213e;border-radius:10px;padding:12px;text-align:center;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.md{width:100%;background:#16213e;border-radius:10px;padding:12px;text-align:center;margin-bottom:8px}
 .mdContent{flex:1;text-align:center}
 .md h2{font-size:1rem;color:#e8d5b7;margin-bottom:8px}
-.mo{display:flex;flex-direction:column;gap:6px;align-items:center}
-.mo label{display:block;padding:10px 16px;background:#2a2a4a;border-radius:10px;cursor:pointer;font-size:.85rem;width:90%;text-align:left;border:2px solid transparent;transition:all .2s}
-.mo label:hover{border-color:#ffd700;background:#333350}
-.mo input[type=radio]{margin-right:8px;accent-color:#ffd700}
-.mo .sub{font-size:.65rem;color:#888;margin-left:22px;margin-top:2px}
-
-.mo label:hover{border-color:#ffd700;background:#333350}
-.mo input[type=radio]{margin-right:8px;accent-color:#ffd700}
-.mo .sub{font-size:.65rem;color:#888;margin-left:22px;margin-top:2px}
+.modeGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;margin-top:12px}
+@media (max-width:600px){.modeGrid{grid-template-columns:1fr}}
+.modeCard{background:#2a2a4a;border:2px solid #444;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center}
+.modeCard:hover{border-color:#ffd700;background:#333350}
+.modeCard h3{color:#ffd700;font-size:.9rem;margin-bottom:4px}
+.modeCard p{color:#aaa;font-size:.75rem}
+.modeCard.selected{border-color:#ffd700;background:#0f3460}
 .ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(22,33,62,.95);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;overflow-y:auto}
 .ov.show{display:flex}
 .ov h2{color:#e8d5b7;font-size:1.2rem;margin-bottom:10px}
@@ -80,7 +69,6 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .msLegend .dot{width:10px;height:10px;border-radius:2px}
 .msLegend .dotN{background:#4a6a8a;border:1px solid #7ab0d4}
 .msLegend .dotM{background:#2a2a2a;border:1px dashed #555}
-.msMissing{color:#ce93d8;font-size:.75rem;text-align:center;min-height:1.2em;padding:2px 8px}
 .msCtrl{display:flex;gap:8px;justify-content:center;margin-top:8px;flex-wrap:wrap}
 .hsScreen{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;z-index:250;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;overflow-y:auto}
 .hsScreen.show{display:flex}
@@ -91,24 +79,11 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .hsOptions label:hover{border-color:#ffd700;background:#333350}
 .hsOptions input[type=radio]{margin-right:12px;accent-color:#ffd700}
 .hsBtnArea{display:flex;gap:10px;margin-top:20px;justify-content:center;flex-wrap:wrap}
-.modeGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;margin-top:12px}
-@media (max-width:600px){.modeGrid{grid-template-columns:1fr}}
-.modeCard{background:#2a2a4a;border:2px solid #444;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center}
-.modeCard:hover{border-color:#ffd700;background:#333350}
-.modeCard h3{color:#ffd700;font-size:.9rem;margin-bottom:4px}
-.modeCard p{color:#aaa;font-size:.75rem}
-.modeCard.selected{border-color:#ffd700;background:#0f3460}
-.phaseBtn{padding:8px 12px;background:#16213e;border:2px solid #444;border-radius:8px;cursor:pointer;font-size:.8rem;color:#aaa;transition:all .2s;min-width:50px;height:fit-content}
-.phaseBtn:hover{border-color:#ffd700}
-.phaseBtn.active{background:#0f3460;border-color:#ffd700;color:#ffd700;font-weight:bold}
 .phaseScreen{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#1a1a2e;z-index:350;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;overflow-y:auto}
 .phaseScreen.show{display:flex}
 .phaseHeader{width:100%;max-width:500px;background:linear-gradient(135deg,#16213e,#0f3460);padding:20px;border-radius:12px;margin-bottom:20px;text-align:center}
 .phaseHeader h2{color:#e8d5b7;font-size:1.4rem;margin-bottom:10px;letter-spacing:.1em}
 .phaseIcon{font-size:3rem;margin-bottom:10px}
-.phaseInfo{display:flex;flex-direction:column;gap:15px;width:100%;max-width:500px;margin-bottom:30px}
-.phaseInfoBox{background:#16213e;padding:15px;border-radius:10px;text-align:left}
-
 .phaseInfo{display:flex;flex-direction:column;gap:15px;width:100%;max-width:500px;margin-bottom:30px}
 .phaseInfoBox{background:#16213e;padding:15px;border-radius:10px;text-align:left}
 .phaseInfoBox h3{color:#ffd700;font-size:.95rem;margin-bottom:8px}
@@ -274,7 +249,6 @@ if ('serviceWorker' in navigator) {
         </div>
       </div>
     </div>
-    <button class="phaseBtn" data-phase="area" onclick="togglePhase('area')">✓</button>
   </div>
 
   <div class="md">
@@ -291,7 +265,6 @@ if ('serviceWorker' in navigator) {
         </div>
       </div>
     </div>
-    <button class="phaseBtn" data-phase="inter" onclick="togglePhase('inter')">✓</button>
   </div>
 
   <div class="md">
@@ -308,10 +281,9 @@ if ('serviceWorker' in navigator) {
         </div>
       </div>
     </div>
-    <button class="phaseBtn" data-phase="wantap" onclick="togglePhase('wantap')">✓</button>
   </div>
 
-    <div style="display:flex;gap:8px;padding:4px 0;justify-content:center;flex-wrap:wrap">
+  <div style="display:flex;gap:8px;padding:4px 0;justify-content:center;flex-wrap:wrap">
     <button class="b bb" onclick="openInitSettings()" style="width:30%">⚙️ 初期設定</button>
     <button class="b bs" id="completeBtn" onclick="gotoPhaseScreen()" style="width:45%" disabled>▶ スタート</button>
   </div>
@@ -383,7 +355,7 @@ if ('serviceWorker' in navigator) {
 </div>
 
 </div>
-<footer>★ Shaka2瞑想 修正版20（NHK時報スタイル・カメラ反転復旧） ★ 鳥井式心身調律歯磨き法</footer>
+<footer>★ Shaka2瞑想 修正版23（完成版・モード切り替えトグル化） ★ 鳥井式心身調律歯磨き法</footer>
 
 <script>
 var video = null;
@@ -428,7 +400,6 @@ var phase = 1;
 var AC = null, run = false, el = 0, si = 0, bi = 0, iv = null, ud = 1, ovAct = '';
 var D = [], DI = [], DW = [];
 var areaRepeatCount = 0;
-var enabledPhases = { area: false, inter: false, wantap: false };
 var startPhase = 1;
 var phaseOrder = ['area', 'inter', 'wantap'];
 var currentPhaseIndex = 0;
@@ -446,12 +417,10 @@ function saveMs() { try { localStorage.setItem('shaka2_missing', JSON.stringify(
 function isMissing(id) { return !!missingTeeth[id]; }
 function syncMsSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById('ms_' + id); if (e) e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); syncMainSvg(); }
 function syncMainSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById(id); if (!e) return; if (e.classList.contains('ta')) return; e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); }
-function updateMsText() {  }
 function tgMs(id) { if (missingTeeth[id]) delete missingTeeth[id]; else missingTeeth[id] = true; syncMsSvg(); }
-function msClear() { missingTeeth = {}; syncMsSvg(); updateMsText(); }
+function msClear() { missingTeeth = {}; syncMsSvg(); }
 function msSave() { saveMs(); document.getElementById('msScreen').classList.remove('show'); document.getElementById('allModeScreen').style.display = 'block'; }
 function backFromMs() { document.getElementById('msScreen').classList.remove('show'); document.getElementById('hsScreen').classList.add('show'); }
-function backToMs() { document.getElementById('allModeScreen').style.display = 'none'; document.getElementById('msScreen').classList.add('show'); }
 function openMs() { if (run) return; syncMsSvg(); document.getElementById('msScreen').classList.add('show'); }
 
 function confirmHandedness() {
@@ -463,41 +432,49 @@ function confirmHandedness() {
 }
 function loadHandedness() { try { var s = localStorage.getItem('shaka2_handedness'); if (s && (s==='right'||s==='left')) handedness = s; } catch(e) {} }
 
-function selectAreaMode(mode) { areaMode = mode; document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i) { e.classList.toggle('selected', i===(mode==='standard'?0:mode==='thorough'?1:2)); }); updateCompleteBtn(); }
-function selectInterMode(mode) { interMode = mode; document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i) { e.classList.toggle('selected', mode==='standard'?i===0:i===1); }); updateCompleteBtn(); }
-function selectWantapMode(mode) { wantapMode = mode; document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i) { e.classList.toggle('selected', mode==='standard'?i===0:i===1); }); updateCompleteBtn(); }
+function selectAreaMode(mode) { 
+  if(areaMode === mode) {
+    areaMode = null;
+  } else {
+    areaMode = mode;
+  }
+  document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i) { 
+    e.classList.toggle('selected', i===(areaMode==='standard'?0:areaMode==='thorough'?1:areaMode==='brain'?2:-1)); 
+  }); 
+  updateCompleteBtn(); 
+}
 
-function togglePhase(pt) {
-  enabledPhases[pt] = !enabledPhases[pt];
-  var btn = document.querySelector('[data-phase="'+pt+'"]');
-  if (btn) btn.classList.toggle('active', enabledPhases[pt]);
-  updateCompleteBtn();
+function selectInterMode(mode) { 
+  if(interMode === mode) {
+    interMode = null;
+  } else {
+    interMode = mode;
+  }
+  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i) { 
+    e.classList.toggle('selected', i===(interMode==='standard'?0:interMode==='brain'?1:-1)); 
+  }); 
+  updateCompleteBtn(); 
+}
+
+function selectWantapMode(mode) { 
+  if(wantapMode === mode) {
+    wantapMode = null;
+  } else {
+    wantapMode = mode;
+  }
+  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i) { 
+    e.classList.toggle('selected', i===(wantapMode==='standard'?0:wantapMode==='brain'?1:-1)); 
+  }); 
+  updateCompleteBtn(); 
 }
 
 function updateCompleteBtn() {
   var btn = document.getElementById('completeBtn');
-  var allSelected = (enabledPhases.area && areaMode !== null) ||
-                    (enabledPhases.inter && interMode !== null) ||
-                    (enabledPhases.wantap && wantapMode !== null);
-  btn.disabled = !allSelected;
+  var anySelected = (areaMode !== null) || (interMode !== null) || (wantapMode !== null);
+  btn.disabled = !anySelected;
 }
 
 function iA() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); }
-
-function playStartSound() {
-  if (!AC) return;
-  var n = AC.currentTime;
-  var o = AC.createOscillator();
-  o.type = 'sine';
-  o.frequency.value = 400;
-  var g = AC.createGain();
-  g.gain.setValueAtTime(0.8, n);
-  g.gain.linearRampToValueAtTime(0, n + 0.2);
-  o.connect(g);
-  g.connect(AC.destination);
-  o.start(n);
-  o.stop(n + 0.2);
-}
 
 function playShortBeep() {
   if (!AC) return;
@@ -565,8 +542,18 @@ function updateCameraBackground() {
   canvas.height = caMain.offsetHeight || 500;
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // 修正前の方式（負の幅で反転）に戻す
-  ctx.drawImage(video, canvas.width, 0, -canvas.width, canvas.height);
+  
+  var isAndroid = /Android/.test(navigator.userAgent);
+  
+  if (isAndroid) {
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.translate(-canvas.width, 0);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  } else {
+    ctx.drawImage(video, canvas.width, 0, -canvas.width, canvas.height);
+  }
   
   var imageData = canvas.toDataURL('image/jpeg', 0.8);
   caMain.style.backgroundImage = 'url(' + imageData + ')';
@@ -666,14 +653,35 @@ function onBeat() {
     si++; 
     if(si>=cd.length) { 
       if(phase===1) { 
-        if(enabledPhases.inter) { phase=2; el=0; si=0; bi=0; DI=getInterHand()==='right'?buildDI_Right():buildDI_Left(); updateTabsForPhase(); showOvNext(); } 
-        else if(enabledPhases.wantap) { phase=3; el=0; si=0; bi=0; DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); updateTabsForPhase(); showOvNext(); } 
-        else finAll(); 
+        if(areaMode !== null && (interMode !== null || wantapMode !== null)) {
+          if(interMode !== null) { 
+            phase=2; 
+            el=0; si=0; bi=0; 
+            DI=getInterHand()==='right'?buildDI_Right():buildDI_Left(); 
+            updateTabsForPhase(); 
+            showOvNext(); 
+          } else if(wantapMode !== null) {
+            phase=3; 
+            el=0; si=0; bi=0; 
+            DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); 
+            updateTabsForPhase(); 
+            showOvNext(); 
+          }
+        } else { 
+          finAll(); 
+        }
         return; 
       } 
       if(phase===2) { 
-        if(enabledPhases.wantap) { phase=3; el=0; si=0; bi=0; DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); updateTabsForPhase(); showOvNext(); } 
-        else finAll(); 
+        if(interMode !== null && wantapMode !== null) { 
+          phase=3; 
+          el=0; si=0; bi=0; 
+          DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); 
+          updateTabsForPhase(); 
+          showOvNext(); 
+        } else { 
+          finAll(); 
+        }
         return; 
       } 
       finAll(); 
@@ -686,28 +694,171 @@ function onBeat() {
 
 function updateTabsForPhase() { p1.className=phase===1?'pi a':'pi'; p2.className=phase===2?'pi a':'pi'; p3.className=phase===3?'pi a':'pi'; }
 
-function showOvBrain() { run=false; clearInterval(iv); ru(); cH(); ovAct='next'; oH.textContent='非優位手に持ち替え'; oP.textContent=(handedness==='right'?'左手':'右手')+'で磨きます'; oP2.textContent=''; ov.classList.add('show'); }
+function showOvBrain() { 
+  run=false; 
+  clearInterval(iv); 
+  ru(); 
+  cH(); 
+  oH.textContent='非優位手に持ち替え'; 
+  oP.textContent=(handedness==='right'?'左手':'右手')+'で磨きます'; 
+  oP2.textContent=''; 
+  ov.classList.add('show'); 
+}
 
-function showOvNext() { run=false; clearInterval(iv); ru(); cH(); ovAct='next'; if(phase===2) { oH.textContent='エリア磨き完了！'; oP.textContent='歯間ブラシに持ち替えてください'; oP2.textContent='歯間磨き（'+fm(DI.length*6)+'）に進みます'; } else if(phase===3) { oH.textContent='歯間磨き完了！'; oP.textContent='ワンタフトブラシに持ち替えてください'; oP2.textContent='ワンタフト磨き（'+fm(DW.length*10)+'）に進みます'; } ov.classList.add('show'); }
+function showOvNext() { 
+  run=false; 
+  clearInterval(iv); 
+  ru(); 
+  cH(); 
+  if(phase===2) { 
+    oH.textContent='磨き完了'; 
+    oP.textContent='歯間ブラシに持ち替えてください'; 
+    oP2.textContent='歯間磨き（'+fm(DI.length*6)+'）'; 
+  } else if(phase===3) { 
+    oH.textContent='磨き完了'; 
+    oP.textContent='ワンタフトブラシに持ち替えてください'; 
+    oP2.textContent='ワンタフト磨き（'+fm(DW.length*10)+'）'; 
+  } 
+  ov.classList.add('show'); 
+}
 
-function ovGo(){ov.classList.remove('show');run=true;document.getElementById('bP').textContent='⏸ 一時停止';playStartSound();iv=setInterval(onBeat,1000);}
+function ovGo(){
+  ov.classList.remove('show');
+  run=true;
+  document.getElementById('bP').textContent='⏸ 一時停止';
+  
+  preCountStart = true;
+  preCountSeconds = 0;
+  timerStarted = false;
+  
+  iv=setInterval(onBeat,1000);
+}
 
-function gotoPhaseScreen(){saveSettings();document.getElementById('allModeScreen').style.display='none';currentPhaseIndex=0; updatePhaseScreen(); document.getElementById('phaseScreen').classList.add('show'); }
+function gotoPhaseScreen(){
+  saveSettings();
+  document.getElementById('allModeScreen').style.display='none';
+  currentPhaseIndex=0; 
+  updatePhaseScreen(); 
+  document.getElementById('phaseScreen').classList.add('show'); 
+}
 
-function updatePhaseScreen() { var phaseInfo = { area: { icon: '🪥', name: 'エリア磨き', subtitle: '全体の基本になる磨き方です', brush: areaMode === 'standard' ? '通常ブラシ（1回）' : areaMode === 'thorough' ? '通常ブラシ（2回）' : '通常ブラシ（利き手＋非優位手）', time:buildD1_Right().length+' エリア'+(areaMode==='thorough'?' ×2回':areaMode==='brain'?' ×2（利き手＋非優位手）':''), content: 'すべてのエリアを系統的に磨きます' }, inter: { icon: '🔗', name: '歯間磨き', subtitle: '歯と歯の間を丁寧に磨きます', brush: interMode === 'standard' ? '歯間ブラシ（1回）' : '歯間ブラシ（非優位手）', time:buildDI_Right().length+' 歯間', content: '隣り合う歯と歯の間を集中的に磨きます' }, wantap: { icon: '🔍', name: 'ワンタフト磨き', subtitle: '細かい部分を丁寧に磨きます', brush: wantapMode === 'standard' ? 'ワンタフトブラシ（1回）' : 'ワンタフトブラシ（非優位手）', time:buildDW_Right().length+' スポット', content: '細かい凹凸や隙間を重点的に磨きます' } }; var current = phaseOrder[currentPhaseIndex]; if (!enabledPhases[current]) { currentPhaseIndex++; if (currentPhaseIndex >= phaseOrder.length) { document.getElementById('phaseScreen').classList.remove('show'); document.getElementById('allModeScreen').style.display = 'block'; return; } updatePhaseScreen(); return; } var info = phaseInfo[current]; document.getElementById('phaseIcon').textContent = info.icon; document.getElementById('phaseName').textContent = info.name; document.getElementById('phaseSubtitle').textContent = info.subtitle; document.getElementById('brushInfo').textContent = info.brush; document.getElementById('timeInfo').textContent = info.time; document.getElementById('contentInfo').textContent = info.content; document.getElementById('nextPhaseBtn').style.display=currentPhaseIndex<phaseOrder.length-1?'block':'none'; }
+function updatePhaseScreen() { 
+  var phaseInfo = { 
+    area: { 
+      icon: '🪥', 
+      name: 'エリア磨き', 
+      subtitle: '全体の基本になる磨き方です', 
+      brush: areaMode === 'standard' ? '通常ブラシ（1回）' : areaMode === 'thorough' ? '通常ブラシ（2回）' : '通常ブラシ（利き手＋非優位手）', 
+      time: D && D.length ? D.length+' エリア'+(areaMode==='thorough'?' ×2回':areaMode==='brain'?' ×2（利き手＋非優位手）':'') : '計算中...', 
+      content: 'すべてのエリアを系統的に磨きます' 
+    }, 
+    inter: { 
+      icon: '🔗', 
+      name: '歯間磨き', 
+      subtitle: '歯と歯の間を丁寧に磨きます', 
+      brush: interMode === 'standard' ? '歯間ブラシ（1回）' : '歯間ブラシ（非優位手）', 
+      time: DI && DI.length ? DI.length+' 歯間' : '計算中...', 
+      content: '隣り合う歯と歯の間を集中的に磨きます' 
+    }, 
+    wantap: { 
+      icon: '🔍', 
+      name: 'ワンタフト磨き', 
+      subtitle: '細かい部分を丁寧に磨きます', 
+      brush: wantapMode === 'standard' ? 'ワンタフトブラシ（1回）' : 'ワンタフトブラシ（非優位手）', 
+      time: DW && DW.length ? DW.length+' スポット' : '計算中...', 
+      content: '細かい凹凸や隙間を重点的に磨きます' 
+    } 
+  }; 
+  
+  var phasesByMode = [];
+  if(areaMode !== null) { D = (handedness==='right')?buildD1_Right():buildD1_Left(); phasesByMode.push('area'); }
+  if(interMode !== null) { DI = getInterHand()==='right'?buildDI_Right():buildDI_Left(); phasesByMode.push('inter'); }
+  if(wantapMode !== null) { DW = getWantapHand()==='right'?buildDW_Right():buildDW_Left(); phasesByMode.push('wantap'); }
+  
+  if(currentPhaseIndex >= phasesByMode.length) {
+    document.getElementById('phaseScreen').classList.remove('show');
+    document.getElementById('allModeScreen').style.display = 'block';
+    return;
+  }
+  
+  var current = phasesByMode[currentPhaseIndex];
+  var info = phaseInfo[current];
+  
+  document.getElementById('phaseIcon').textContent = info.icon;
+  document.getElementById('phaseName').textContent = info.name;
+  document.getElementById('phaseSubtitle').textContent = info.subtitle;
+  document.getElementById('brushInfo').textContent = info.brush;
+  document.getElementById('timeInfo').textContent = info.time;
+  document.getElementById('contentInfo').textContent = info.content;
+  document.getElementById('nextPhaseBtn').style.display=currentPhaseIndex<phasesByMode.length-1?'block':'none';
+}
 
-function saveSettings(){try{localStorage.setItem('shaka2_settings',JSON.stringify({areaMode:areaMode,interMode:interMode,wantapMode:wantapMode,enabledPhases:enabledPhases}));}catch(e){};  }
-function loadSettings(){try{var s=localStorage.getItem('shaka2_settings');if(!s)return false;var d=JSON.parse(s);areaMode=d.areaMode;interMode=d.interMode;wantapMode=d.wantapMode;enabledPhases=d.enabledPhases;return true;}catch(e){return false;}}
-function openInitSettings(){document.getElementById('allModeScreen').style.display='none';document.getElementById('hsScreen').classList.add('show');}
-function backToModeScreen(){document.getElementById('phaseScreen').classList.remove('show');document.getElementById('allModeScreen').style.display='block';}
+function saveSettings(){
+  try{
+    var settings = {};
+    if(areaMode !== null) settings.areaMode = areaMode;
+    if(interMode !== null) settings.interMode = interMode;
+    if(wantapMode !== null) settings.wantapMode = wantapMode;
+    localStorage.setItem('shaka2_settings',JSON.stringify(settings));
+  }catch(e){}  
+}
 
-function prevPhase() { currentPhaseIndex--; if (currentPhaseIndex < 0) currentPhaseIndex = 0; updatePhaseScreen(); }
+function loadSettings(){
+  try{
+    var s=localStorage.getItem('shaka2_settings');
+    if(!s)return false;
+    var d=JSON.parse(s);
+    if(d.areaMode) areaMode=d.areaMode;
+    if(d.interMode) interMode=d.interMode;
+    if(d.wantapMode) wantapMode=d.wantapMode;
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 
-function nextPhase() { currentPhaseIndex++; if (currentPhaseIndex >= phaseOrder.length) currentPhaseIndex = phaseOrder.length - 1; updatePhaseScreen(); }
+function openInitSettings(){
+  document.getElementById('allModeScreen').style.display='none';
+  document.getElementById('hsScreen').classList.add('show');
+}
+
+function backToModeScreen(){
+  document.getElementById('phaseScreen').classList.remove('show');
+  document.getElementById('allModeScreen').style.display='block';
+}
+
+function prevPhase() { 
+  var phasesByMode = [];
+  if(areaMode !== null) phasesByMode.push('area');
+  if(interMode !== null) phasesByMode.push('inter');
+  if(wantapMode !== null) phasesByMode.push('wantap');
+  
+  currentPhaseIndex--; 
+  if (currentPhaseIndex < 0) currentPhaseIndex = 0; 
+  updatePhaseScreen(); 
+}
+
+function nextPhase() { 
+  var phasesByMode = [];
+  if(areaMode !== null) phasesByMode.push('area');
+  if(interMode !== null) phasesByMode.push('inter');
+  if(wantapMode !== null) phasesByMode.push('wantap');
+  
+  currentPhaseIndex++; 
+  if (currentPhaseIndex >= phasesByMode.length) currentPhaseIndex = phasesByMode.length - 1; 
+  updatePhaseScreen(); 
+}
 
 function startPhaseSession() { 
-  iA(); 
-  var current = phaseOrder[currentPhaseIndex]; 
+  iA();
+  
+  var phasesByMode = [];
+  if(areaMode !== null) phasesByMode.push('area');
+  if(interMode !== null) phasesByMode.push('inter');
+  if(wantapMode !== null) phasesByMode.push('wantap');
+  
+  var current = phasesByMode[currentPhaseIndex];
+  
   if (current === 'area') { 
     phase = 1; 
   } else if (current === 'inter') { 
@@ -715,7 +866,9 @@ function startPhaseSession() {
   } else if (current === 'wantap') { 
     phase = 3; 
   } 
+  
   si=0; bi=0; el=0; areaRepeatCount=0; isBrainSecondRound=false; 
+  
   if(phase===1) { 
     var h=getAreaHand(1); 
     D=(h==='right')?buildD1_Right():buildD1_Left(); 
@@ -724,6 +877,7 @@ function startPhaseSession() {
   } else { 
     DW=getWantapHand()==='right'?buildDW_Right():buildDW_Left(); 
   } 
+  
   document.getElementById('phaseScreen').classList.remove('show'); 
   caMain.style.display='block'; 
   document.getElementById('tabArea').style.display='flex'; 
@@ -735,22 +889,29 @@ function startPhaseSession() {
   rI.textContent=''; 
   bbF.setAttribute('height','0'); 
   bbT.textContent=''; 
+  
   updateCameraBackground();
+  
   run=true;
   document.getElementById('bP').textContent='⏸ 一時停止';
-  playStartSound(); 
   
   preCountStart = true;
   preCountSeconds = 0;
   timerStarted = false;
   
-  setTimeout(function() { 
-    if(!run) return; 
-    iv=setInterval(onBeat,1000); 
-  }, 2000);
+  iv=setInterval(onBeat,1000);
 }
 
-function pa(){run=!run;document.getElementById('bP').textContent=run?'⏸ 一時停止':'▶ 再開';if(run){iv=setInterval(onBeat,1000);}else{clearInterval(iv);ru();}}
+function pa(){
+  run=!run;
+  document.getElementById('bP').textContent=run?'⏸ 一時停止':'▶ 再開';
+  if(run){
+    iv=setInterval(onBeat,1000);
+  }else{
+    clearInterval(iv);
+    ru();
+  }
+}
 
 function backToPhaseScreen(){
   run=false;
@@ -784,7 +945,7 @@ function finAll() {
   ru(); 
   cH(); 
   nM.textContent='🙏 完了！'; 
-  nS.textContent=({1:'エリア磨き',2:'歯間磨き',3:'ワンタフト磨き'})[phase]+'完了（'+fm(el)+'）'; 
+  nS.textContent='すべて終了（'+fm(el)+'）'; 
   nR.textContent=''; 
   sI.textContent=''; 
   rI.textContent=''; 
@@ -797,7 +958,6 @@ function finAll() {
 loadHandedness();
 loadMs();
 
-function updatePhaseInfo(){}
 function restoreUI(){
   if(loadSettings()){
     document.getElementById('allModeScreen').style.display='block';
@@ -809,19 +969,21 @@ function restoreUI(){
 }
 
 function restoreModeCards(){
-  document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){
-    e.classList.toggle('selected',i===(areaMode==='standard'?0:areaMode==='thorough'?1:2));
-  });
-  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){
-    e.classList.toggle('selected',interMode==='standard'?i===0:i===1);
-  });
-  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){
-    e.classList.toggle('selected',wantapMode==='standard'?i===0:i===1);
-  });
-  document.querySelectorAll('.phaseBtn').forEach(function(btn){
-    var pt=btn.getAttribute('data-phase');
-    btn.classList.toggle('active',enabledPhases[pt]);
-  });
+  if(areaMode) {
+    document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){
+      e.classList.toggle('selected',i===(areaMode==='standard'?0:areaMode==='thorough'?1:2));
+    });
+  }
+  if(interMode) {
+    document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){
+      e.classList.toggle('selected',interMode==='standard'?i===0:i===1);
+    });
+  }
+  if(wantapMode) {
+    document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){
+      e.classList.toggle('selected',wantapMode==='standard'?i===0:i===1);
+    });
+  }
   updateCompleteBtn();
 }
 
