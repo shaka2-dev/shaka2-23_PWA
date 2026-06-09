@@ -439,13 +439,55 @@ function selectAreaMode(mode) {
   } else {
     areaMode = mode;
   }
-  // 修正：各カードを明確に ON/OFF する
+  
   var modeMap = {'standard': 0, 'thorough': 1, 'brain': 2};
-  document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i) { 
+  document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e, i) { 
     if(areaMode === null) {
       e.classList.remove('selected');
+    } else if(i === modeMap[areaMode]) {
+      e.classList.add('selected');
     } else {
-      e.classList.toggle('selected', i === modeMap[areaMode]); 
+      e.classList.remove('selected');
+    }
+  }); 
+  updateCompleteBtn(); 
+}
+
+function selectInterMode(mode) { 
+  if(interMode === mode) {
+    interMode = null;
+  } else {
+    interMode = mode;
+  }
+  
+  var modeMap = {'standard': 0, 'brain': 1};
+  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e, i) { 
+    if(interMode === null) {
+      e.classList.remove('selected');
+    } else if(i === modeMap[interMode]) {
+      e.classList.add('selected');
+    } else {
+      e.classList.remove('selected');
+    }
+  }); 
+  updateCompleteBtn(); 
+}
+
+function selectWantapMode(mode) { 
+  if(wantapMode === mode) {
+    wantapMode = null;
+  } else {
+    wantapMode = mode;
+  }
+  
+  var modeMap = {'standard': 0, 'brain': 1};
+  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e, i) { 
+    if(wantapMode === null) {
+      e.classList.remove('selected');
+    } else if(i === modeMap[wantapMode]) {
+      e.classList.add('selected');
+    } else {
+      e.classList.remove('selected');
     }
   }); 
   updateCompleteBtn(); 
