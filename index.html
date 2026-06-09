@@ -48,11 +48,18 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .md h2{font-size:1rem;color:#e8d5b7;margin-bottom:8px}
 .modeGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;margin-top:12px}
 @media (max-width:600px){.modeGrid{grid-template-columns:1fr}}
-.modeCard{background:#2a2a4a;border:2px solid #444;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center}
-.modeCard:hover{border-color:#ffd700;background:#333350}
-.modeCard h3{color:#ffd700;font-size:.9rem;margin-bottom:4px}
-.modeCard p{color:#aaa;font-size:.75rem}
-.modeCard.selected{border-color:#ffd700;background:#0f3460}
+.modeCard{background:#808080;border:none !important;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center}
+.modeCard:hover{background:#808080;border:none !important}
+.modeCard:active{background:#808080;border:none !important}
+.modeCard:focus{background:#808080;border:none !important}
+.modeCard h3{color:#ffff99;font-size:.9rem;margin-bottom:4px;font-weight:normal}
+.modeCard p{color:#ffff99;font-size:.75rem}
+.modeCard.selected{background:#000000;border:none !important}
+.modeCard.selected h3{color:#ffff00;font-weight:bold}
+.modeCard.selected p{color:#ffff00;font-weight:bold}
+.modeCard.selected:hover{background:#000000;border:none !important}
+.modeCard.selected:active{background:#000000;border:none !important}
+.modeCard.selected:focus{background:#000000;border:none !important}
 @media (hover: none) {
   .modeCard:hover {
     border-color: transparent;
