@@ -248,15 +248,15 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🪥 エリア磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectAreaMode('standard')">
+        <div class="modeCard" onclick="selectAreaMode('standard'); return false;">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectAreaMode('thorough')">
+        <div class="modeCard" onclick="selectAreaMode('thorough'); return false;">
           <h3>念入り</h3>
           <p>利き手2回</p>
         </div>
-        <div class="modeCard" onclick="selectAreaMode('brain')">
+        <div class="modeCard" onclick="selectAreaMode('brain'); return false;">
           <h3>ブレイン</h3>
           <p>利き手＋非優位手</p>
         </div>
@@ -268,11 +268,11 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🔗 歯間磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectInterMode('standard')">
+        <div class="modeCard" onclick="selectInterMode('standard'); return false;">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectInterMode('brain')">
+        <div class="modeCard" onclick="selectInterMode('brain'); return false;">
           <h3>ブレイン</h3>
           <p>非優位手1回</p>
         </div>
@@ -284,11 +284,11 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🔍 ワンタフト磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectWantapMode('standard')">
+        <div class="modeCard" onclick="selectWantapMode('standard'); return false;">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectWantapMode('brain')">
+        <div class="modeCard" onclick="selectWantapMode('brain'); return false;">
           <h3>ブレイン</h3>
           <p>非優位手1回</p>
         </div>
