@@ -53,6 +53,12 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .modeCard h3{color:#ffd700;font-size:.9rem;margin-bottom:4px}
 .modeCard p{color:#aaa;font-size:.75rem}
 .modeCard.selected{border-color:#ffd700;background:#0f3460}
+@media (hover: none) {
+  .modeCard:hover {
+    border-color: transparent;
+    background: #2a2a4a;
+  }
+}
 .ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(22,33,62,.95);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;overflow-y:auto}
 .ov.show{display:flex}
 .ov h2{color:#e8d5b7;font-size:1.2rem;margin-bottom:10px}
