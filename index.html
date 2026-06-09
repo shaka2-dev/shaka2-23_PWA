@@ -60,12 +60,6 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .modeCard.selected:hover{background:#000000;border:none !important}
 .modeCard.selected:active{background:#000000;border:none !important}
 .modeCard.selected:focus{background:#000000;border:none !important}
-@media (hover: none) {
-  .modeCard:hover {
-    border-color: transparent;
-    background: #2a2a4a;
-  }
-}
 .ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(22,33,62,.95);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;overflow-y:auto}
 .ov.show{display:flex}
 .ov h2{color:#e8d5b7;font-size:1.2rem;margin-bottom:10px}
@@ -248,15 +242,15 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🪥 エリア磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectAreaMode('standard')">
+        <div class="modeCard" id="areaMode-standard">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectAreaMode('thorough')">
+        <div class="modeCard" id="areaMode-thorough">
           <h3>念入り</h3>
           <p>利き手2回</p>
         </div>
-        <div class="modeCard" onclick="selectAreaMode('brain')">
+        <div class="modeCard" id="areaMode-brain">
           <h3>ブレイン</h3>
           <p>利き手＋非優位手</p>
         </div>
@@ -268,11 +262,11 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🔗 歯間磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectInterMode('standard')">
+        <div class="modeCard" id="interMode-standard">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectInterMode('brain')">
+        <div class="modeCard" id="interMode-brain">
           <h3>ブレイン</h3>
           <p>非優位手1回</p>
         </div>
@@ -284,11 +278,11 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🔍 ワンタフト磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectWantapMode('standard')">
+        <div class="modeCard" id="wantapMode-standard">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectWantapMode('brain')">
+        <div class="modeCard" id="wantapMode-brain">
           <h3>ブレイン</h3>
           <p>非優位手1回</p>
         </div>
@@ -502,66 +496,6 @@ function selectWantapMode(mode) {
     } else {
       e.classList.remove('selected');
     }
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectInterMode(mode) { 
-  if(interMode === mode) {
-    interMode = null;
-  } else {
-    interMode = mode;
-  }
-  // 修正：各カードを明確に ON/OFF する
-  var modeMap = {'standard': 0, 'brain': 1};
-  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i) { 
-    if(interMode === null) {
-      e.classList.remove('selected');
-    } else {
-      e.classList.toggle('selected', i === modeMap[interMode]); 
-    }
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectWantapMode(mode) { 
-  if(wantapMode === mode) {
-    wantapMode = null;
-  } else {
-    wantapMode = mode;
-  }
-  // 修正：各カードを明確に ON/OFF する
-  var modeMap = {'standard': 0, 'brain': 1};
-  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i) { 
-    if(wantapMode === null) {
-      e.classList.remove('selected');
-    } else {
-      e.classList.toggle('selected', i === modeMap[wantapMode]); 
-    }
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectInterMode(mode) { 
-  if(interMode === mode) {
-    interMode = null;
-  } else {
-    interMode = mode;
-  }
-  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i) { 
-    e.classList.toggle('selected', i===(interMode==='standard'?0:interMode==='brain'?1:-1)); 
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectWantapMode(mode) { 
-  if(wantapMode === mode) {
-    wantapMode = null;
-  } else {
-    wantapMode = mode;
-  }
-  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i) { 
-    e.classList.toggle('selected', i===(wantapMode==='standard'?0:wantapMode==='brain'?1:-1)); 
   }); 
   updateCompleteBtn(); 
 }
@@ -896,15 +830,15 @@ function loadSettings(){
     var s=localStorage.getItem('shaka2_settings');
     if(!s)return false;
     var d=JSON.parse(s);
-    // areaMode, interMode, wantapMode をリセット
-    areaMode = null;
-    interMode = null;
-    wantapMode = null;
+    if(d.areaMode) areaMode=d.areaMode;
+    if(d.interMode) interMode=d.interMode;
+    if(d.wantapMode) wantapMode=d.wantapMode;
     return true;
   }catch(e){
     return false;
   }
 }
+
 function openInitSettings(){
   document.getElementById('allModeScreen').style.display='none';
   document.getElementById('hsScreen').classList.add('show');
@@ -1059,8 +993,7 @@ function restoreUI(){
 function restoreModeCards(){
   if(areaMode) {
     document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){
-      var idx = (areaMode==='standard'?0:areaMode==='thorough'?1:areaMode==='brain'?2:-1);
-      if(i === idx) {
+      if(i===(areaMode==='standard'?0:areaMode==='thorough'?1:2)) {
         e.classList.add('selected');
       } else {
         e.classList.remove('selected');
@@ -1069,8 +1002,7 @@ function restoreModeCards(){
   }
   if(interMode) {
     document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){
-      var idx = (interMode==='standard'?0:interMode==='brain'?1:-1);
-      if(i === idx) {
+      if(i===(interMode==='standard'?0:1)) {
         e.classList.add('selected');
       } else {
         e.classList.remove('selected');
@@ -1079,8 +1011,7 @@ function restoreModeCards(){
   }
   if(wantapMode) {
     document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){
-      var idx = (wantapMode==='standard'?0:wantapMode==='brain'?1:-1);
-      if(i === idx) {
+      if(i===(wantapMode==='standard'?0:1)) {
         e.classList.add('selected');
       } else {
         e.classList.remove('selected');
@@ -1090,18 +1021,37 @@ function restoreModeCards(){
   updateCompleteBtn();
 }
 
-restoreUI();
-function debugModeCard(element, name) {
-    ['touchstart', 'touchend', 'mousedown', 'mouseup', 'click'].forEach(evt => {
-        element.addEventListener(evt, function(e) {
-            console.log(`[${name}] ${evt} fired at ${Date.now()}`);
-        });
+// イベントリスナー設定
+function setupModeToggle(elementId, selectFunction) {
+    var element = document.getElementById(elementId);
+    if (!element) return;
+    
+    element.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        selectFunction();
+    }, { passive: false });
+    
+    element.addEventListener('click', function(e) {
+        if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) {
+            return;
+        }
+        e.preventDefault();
+        selectFunction();
     });
 }
 
+// DOMContentLoaded後に実行
 document.addEventListener('DOMContentLoaded', function() {
-    var areaCards = document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard');
-    if(areaCards[0]) debugModeCard(areaCards[0], 'AREA-STANDARD');
+    setupModeToggle('areaMode-standard', function() { selectAreaMode('standard'); });
+    setupModeToggle('areaMode-thorough', function() { selectAreaMode('thorough'); });
+    setupModeToggle('areaMode-brain', function() { selectAreaMode('brain'); });
+    setupModeToggle('interMode-standard', function() { selectInterMode('standard'); });
+    setupModeToggle('interMode-brain', function() { selectInterMode('brain'); });
+    setupModeToggle('wantapMode-standard', function() { selectWantapMode('standard'); });
+    setupModeToggle('wantapMode-brain', function() { selectWantapMode('brain'); });
+    
+    restoreUI();
 });
 </script>
 </body>
