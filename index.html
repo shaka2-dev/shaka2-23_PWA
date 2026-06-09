@@ -439,8 +439,50 @@ function selectAreaMode(mode) {
   } else {
     areaMode = mode;
   }
+  // 修正：各カードを明確に ON/OFF する
+  var modeMap = {'standard': 0, 'thorough': 1, 'brain': 2};
   document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i) { 
-    e.classList.toggle('selected', i===(areaMode==='standard'?0:areaMode==='thorough'?1:areaMode==='brain'?2:-1)); 
+    if(areaMode === null) {
+      e.classList.remove('selected');
+    } else {
+      e.classList.toggle('selected', i === modeMap[areaMode]); 
+    }
+  }); 
+  updateCompleteBtn(); 
+}
+
+function selectInterMode(mode) { 
+  if(interMode === mode) {
+    interMode = null;
+  } else {
+    interMode = mode;
+  }
+  // 修正：各カードを明確に ON/OFF する
+  var modeMap = {'standard': 0, 'brain': 1};
+  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i) { 
+    if(interMode === null) {
+      e.classList.remove('selected');
+    } else {
+      e.classList.toggle('selected', i === modeMap[interMode]); 
+    }
+  }); 
+  updateCompleteBtn(); 
+}
+
+function selectWantapMode(mode) { 
+  if(wantapMode === mode) {
+    wantapMode = null;
+  } else {
+    wantapMode = mode;
+  }
+  // 修正：各カードを明確に ON/OFF する
+  var modeMap = {'standard': 0, 'brain': 1};
+  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i) { 
+    if(wantapMode === null) {
+      e.classList.remove('selected');
+    } else {
+      e.classList.toggle('selected', i === modeMap[wantapMode]); 
+    }
   }); 
   updateCompleteBtn(); 
 }
