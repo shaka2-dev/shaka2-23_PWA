@@ -1059,17 +1059,32 @@ function restoreUI(){
 function restoreModeCards(){
   if(areaMode) {
     document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard').forEach(function(e,i){
-      e.classList.toggle('selected',i===(areaMode==='standard'?0:areaMode==='thorough'?1:2));
+      var idx = (areaMode==='standard'?0:areaMode==='thorough'?1:areaMode==='brain'?2:-1);
+      if(i === idx) {
+        e.classList.add('selected');
+      } else {
+        e.classList.remove('selected');
+      }
     });
   }
   if(interMode) {
     document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i){
-      e.classList.toggle('selected',interMode==='standard'?i===0:i===1);
+      var idx = (interMode==='standard'?0:interMode==='brain'?1:-1);
+      if(i === idx) {
+        e.classList.add('selected');
+      } else {
+        e.classList.remove('selected');
+      }
     });
   }
   if(wantapMode) {
     document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i){
-      e.classList.toggle('selected',wantapMode==='standard'?i===0:i===1);
+      var idx = (wantapMode==='standard'?0:wantapMode==='brain'?1:-1);
+      if(i === idx) {
+        e.classList.add('selected');
+      } else {
+        e.classList.remove('selected');
+      }
     });
   }
   updateCompleteBtn();
