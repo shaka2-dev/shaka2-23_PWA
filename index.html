@@ -1091,6 +1091,18 @@ function restoreModeCards(){
 }
 
 restoreUI();
+function debugModeCard(element, name) {
+    ['touchstart', 'touchend', 'mousedown', 'mouseup', 'click'].forEach(evt => {
+        element.addEventListener(evt, function(e) {
+            console.log(`[${name}] ${evt} fired at ${Date.now()}`);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var areaCards = document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard');
+    if(areaCards[0]) debugModeCard(areaCards[0], 'AREA-STANDARD');
+});
 </script>
 </body>
 </html>
