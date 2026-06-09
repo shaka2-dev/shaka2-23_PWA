@@ -896,15 +896,15 @@ function loadSettings(){
     var s=localStorage.getItem('shaka2_settings');
     if(!s)return false;
     var d=JSON.parse(s);
-    if(d.areaMode) areaMode=d.areaMode;
-    if(d.interMode) interMode=d.interMode;
-    if(d.wantapMode) wantapMode=d.wantapMode;
+    // areaMode, interMode, wantapMode をリセット
+    areaMode = null;
+    interMode = null;
+    wantapMode = null;
     return true;
   }catch(e){
     return false;
   }
 }
-
 function openInitSettings(){
   document.getElementById('allModeScreen').style.display='none';
   document.getElementById('hsScreen').classList.add('show');
