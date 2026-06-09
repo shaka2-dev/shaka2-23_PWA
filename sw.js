@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shaka2-pwa-v7';
+const CACHE_NAME = 'shaka2-pwa-v8';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -16,15 +16,19 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
+self.addEventListener('activate', function(event) {
   console.log('Service Worker activated');
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
-            .map(key => caches.delete(key))
-      )
-    )
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CACHE_NAME) {
+            console.log('古いキャッシュを削除:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
   self.clients.claim();
 });
