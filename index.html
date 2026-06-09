@@ -379,6 +379,7 @@ function initCameraImmediately() {
           canvas = document.createElement('canvas');
           ctx = canvas.getContext('2d');
         }
+        requestAnimationFrame(updateCameraBackground);
       })
       .catch(function(err) {
         console.error('カメラアクセス拒否:', err);
