@@ -48,7 +48,7 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .md h2{font-size:1rem;color:#e8d5b7;margin-bottom:8px}
 .modeGrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;margin-top:12px}
 @media (max-width:600px){.modeGrid{grid-template-columns:1fr}}
-.modeCard{background:#808080;border:none !important;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center}
+.modeCard{background:#808080;border:none !important;border-radius:10px;padding:10px;cursor:pointer;transition:all .2s;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
 .modeCard:hover{background:#808080;border:none !important}
 .modeCard:active{background:#808080;border:none !important}
 .modeCard:focus{background:#808080;border:none !important}
@@ -248,15 +248,15 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🪥 エリア磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectAreaMode('standard'); return false;">
+        <div class="modeCard" onclick="selectAreaMode('standard')">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectAreaMode('thorough'); return false;">
+        <div class="modeCard" onclick="selectAreaMode('thorough')">
           <h3>念入り</h3>
           <p>利き手2回</p>
         </div>
-        <div class="modeCard" onclick="selectAreaMode('brain'); return false;">
+        <div class="modeCard" onclick="selectAreaMode('brain')">
           <h3>ブレイン</h3>
           <p>利き手＋非優位手</p>
         </div>
@@ -268,11 +268,11 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🔗 歯間磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectInterMode('standard'); return false;">
+        <div class="modeCard" onclick="selectInterMode('standard')">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectInterMode('brain'); return false;">
+        <div class="modeCard" onclick="selectInterMode('brain')">
           <h3>ブレイン</h3>
           <p>非優位手1回</p>
         </div>
@@ -284,11 +284,11 @@ if ('serviceWorker' in navigator) {
     <div class="mdContent">
       <h2>🔍 ワンタフト磨きモード</h2>
       <div class="modeGrid">
-        <div class="modeCard" onclick="selectWantapMode('standard'); return false;">
+        <div class="modeCard" onclick="selectWantapMode('standard')">
           <h3>標準</h3>
           <p>利き手1回</p>
         </div>
-        <div class="modeCard" onclick="selectWantapMode('brain'); return false;">
+        <div class="modeCard" onclick="selectWantapMode('brain')">
           <h3>ブレイン</h3>
           <p>非優位手1回</p>
         </div>
