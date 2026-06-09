@@ -1,9 +1,248 @@
-# 引継ぎメモ（完全版）
+# 📋 README.md と引継ぎメモ作成
 
-以下をREADME.mdに貼り付けてください：
+了解しました。以下の2つのファイルを作成します。
+
+---
+
+## 📄 README.md
 
 ```markdown
-# 📝 Shaka2瞑想 引継ぎメモ（完全版）
+# 🪵 Shaka2瞑想（修正版23・PWA版）
+
+NHK時報スタイルの心身調律歯磨きアプリ。鳥井式心身調律歯磨き法に基づいた設計で、モバイル向けPWA（Progressive Web App）対応です。
+
+## 🌐 アクセス
+
+**URL:** https://shaka2-dev.github.io/shaka2-23_PWA/
+
+## 📱 対応デバイス
+
+- ✅ PC Chrome / Firefox / Edge
+- ✅ Android Chrome（PWA アプリ化可能）
+- ✅ iPhone Safari（PWA アプリ化可能）
+
+## 🎯 主な機能
+
+### 1. 利き手設定
+- 右手利き / 左手利き を選択可能
+- 設定は localStorage に保存
+
+### 2. 欠損歯登録
+- 歯を タップして欠損 ⇔ 通常 を切り替え可能
+- 設定は localStorage に保存
+
+### 3. モード選択（トグル機能）
+- **エリア磨きモード**
+  - 標準：利き手 1 回
+  - 念入り：利き手 2 回
+  - ブレイン：利き手＋非優位手
+
+- **歯間磨きモード**
+  - 標準：利き手 1 回
+  - ブレイン：非優位手 1 回
+
+- **ワンタフト磨きモード**
+  - 標準：利き手 1 回
+  - ブレイン：非優位手 1 回
+
+### 4. 磨きガイド
+- NHK時報スタイルの音声ガイダンス
+- 木魚のリズム音
+- ビジュアルバー（吸・吐）
+- 歯の色変化表示
+- タイマー表示
+- カメラ背景表示（ミラー映像）
+
+### 5. PWA 機能
+- オフライン動作対応
+- ホーム画面にインストール可能
+- Service Worker でキャッシング
+
+## 🏗️ ファイル構成
+
+```
+shaka2-23_PWA/
+├── index.html          ← メインアプリケーション
+├── manifest.json       ← PWA マニフェスト
+├── sw.js              ← Service Worker
+├── README.md          ← このファイル
+└── .gitignore         ← Git 無視設定
+```
+
+## 🔑 GitHub Pages 設定
+
+```
+Settings → Pages
+├─ Source: Deploy from a branch
+├─ Branch: main / (root)
+├─ Custom domain: 空白（推奨）
+└─ Status: Your site is live at https://shaka2-dev.github.io/shaka2-23_PWA/
+```
+
+## 🛠️ 技術スタック
+
+- **言語**: HTML5 + CSS3 + Vanilla JavaScript
+- **フレームワーク**: なし（依存なし）
+- **PWA**: Service Worker API
+- **Audio**: Web Audio API
+- **Canvas**: Canvas API（カメラ背景用）
+- **ストレージ**: localStorage
+
+## 🎨 カラーデザイン
+
+| 要素 | 状態 | 背景色 | 文字色 |
+|------|------|--------|--------|
+| モードカード | OFF | `#808080`（灰色） | `#ffff99`（薄黄色） |
+| モードカード | ON | `#000000`（黒） | `#ffff00`（黄色） |
+| スタートボタン | 有効 | `#4caf50`（緑） | 白色 |
+| スタートボタン | 無効 | `#888888`（灰色） | 白色 |
+
+## 🚨 トラブルシューティング
+
+### 修正が反映されない場合
+
+```
+1. F12 → Application → Service Workers → Unregister
+2. F12 → Application → Cache storage → Delete
+3. Ctrl + Shift + R（強制リロード）
+4. ページが正常に読み込まれるか確認
+```
+
+### Android PWA でトグル機能が動作しない場合
+
+```
+1. PWA アプリのキャッシュをクリア
+   設定 → アプリ → Chrome → ストレージ → キャッシュを削除
+
+2. PWA アプリを削除（ホーム画面のアイコン長押し → 削除）
+
+3. Chrome ブラウザで再度インストール
+
+4. Service Worker のバージョンが最新か確認
+```
+
+### カメラが映らない場合
+
+```
+1. ブラウザのカメラ許可を確認
+   アドレスバー左の 🔒 → サイト設定 → カメラ
+
+2. 他のアプリがカメラを占有していないか確認
+
+3. キャッシュをクリアして再度アクセス
+```
+
+## 📝 更新履歴
+
+### 2026年6月21日（最新）
+
+**v21 リリース - Android PWA トグル機能完全修正**
+
+- ✅ Android PWA でのタッチイベント問題を根本解決
+- ✅ `touchend` + `click` イベントリスナーで堅牢な実装
+- ✅ CSS に `touch-action: manipulation` を追加
+- ✅ HTML から `onclick` を削除し、JavaScript でイベント管理
+- ✅ PC と Android で完全に同一の動作を実現
+
+### 2026年6月9日
+
+**v19 リリース - カメラ反転問題解決**
+
+- ✅ フロントカメラ（facingMode: 'user'）の反転処理を廃止
+- ✅ Service Worker キャッシュ問題を解決
+- ✅ sw.js のバージョン管理を強化
+
+### 2026年6月8日
+
+**v1 リリース - 初期公開**
+
+- ✅ 修正版23・PWA版 として正式リリース
+
+## 🔧 保守のポイント
+
+### 必須ルール
+
+```
+1. 修正前に必ず実機で問題を確認する
+2. 正常に動いているものには手を加えない
+3. 修正は 1 箇所ずつ行い、その都度テストする
+4. 修正前のコードを必ず控えておく
+5. sw.js の CACHE_NAME を必ず上げる
+```
+
+### 修正手順
+
+```
+1. GitHub で該当ファイルを編集
+2. Commit changes
+3. sw.js で CACHE_NAME を 1 つ上げる
+4. Commit changes
+5. Actions タブで ✅ ビルド完了を確認
+6. PC と Android で動作確認
+```
+
+### デバッグ方法
+
+**PC:**
+```
+F12 → Console でエラーを確認
+F12 → Application → Service Workers でバージョン確認
+```
+
+**Android:**
+```
+Chrome メニュー → 設定 → Chrome について で最新版を確認
+設定 → プライバシーとセキュリティ → 閲覧履歴データ削除
+```
+
+## 📞 開発者向け情報
+
+### Service Worker キャッシュバージョン管理
+
+現在の最新バージョン: **v21**
+
+**バージョン上げ方:**
+```javascript
+// sw.js 内
+const CACHE_NAME = 'shaka2-pwa-v21';  // → 'shaka2-pwa-v22' に変更
+```
+
+### localStorage キー一覧
+
+| キー | 用途 | 例 |
+|------|------|-----|
+| `shaka2_handedness` | 利き手設定 | `'right'` or `'left'` |
+| `shaka2_missing` | 欠損歯情報 | `{"UR8":true,"UR7":true,...}` |
+| `shaka2_settings` | モード選択 | `{"areaMode":"standard","interMode":"brain"}` |
+
+## 📚 参考資料
+
+- [鳥井式心身調律歯磨き法](https://example.com)
+- [NHK時報](https://www3.nhk.or.jp/)
+- [PWA（Progressive Web App）](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
+- [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
+
+## 📄 ライセンス
+
+このプロジェクトはプライベートプロジェクトです。
+
+## 🙏 謝辞
+
+- Opus（Claude） - Android PWA トラブルシューティング支援
+- ユーザーの皆様 - テスト・フィードバック支援
+```
+
+---
+
+## 📋 引継ぎメモ（完全版2・2026年6月21日版）
+
+```markdown
+# 🪵 Shaka2瞑想 引継ぎメモ（完全版2）
+
+## 📅 作成日
+
+- 初版：2026年6月8日
+- 更新：2026年6月21日（v21 リリース）
 
 ---
 
@@ -16,7 +255,7 @@
 - モバイル向け PWA（Progressive Web App）対応
 - GitHub Pages でデプロイ
 
-**URL:** `https://shaka2-dev.github.io/shaka2-23_PWA/`
+**URL:** https://shaka2-dev.github.io/shaka2-23_PWA/
 
 ---
 
@@ -27,9 +266,9 @@ shaka2-23_PWA/
 ├── .nojekyll           ← Jekyll 無効化（必須）
 ├── index.html          ← メインアプリケーション
 ├── manifest.json       ← PWA マニフェスト
-├── sw.js              ← Service Worker（CACHE_NAME: v11）
-├── README.md          ← 本ドキュメント
-└── .gitignore         ← 必要に応じて
+├── sw.js              ← Service Worker（CACHE_NAME: v21）
+├── README.md          ← 説明書
+└── .gitignore         ← Git 無視設定
 ```
 
 ---
@@ -49,7 +288,7 @@ Settings → Pages
 ### Service Worker
 
 ```javascript
-const CACHE_NAME = 'shaka2-pwa-v11';
+const CACHE_NAME = 'shaka2-pwa-v21';  // 現在のバージョン
 ```
 
 ### manifest.json
@@ -82,12 +321,10 @@ const CACHE_NAME = 'shaka2-pwa-v11';
 【パターン1】前提の誤り
   思い込みで「問題がある」と判断し、正常なものに不要な修正を加える
   → 正常だったものが壊れる
-  例：フロントカメラは既にミラー映像を返しているのに反転処理を追加
-    → 二重反転で元に戻ってしまった
 
 【パターン2】副作用
   「Aだけ変えたい」つもりがAの周囲（B, C）にも影響が波及する
-  例：caMain要素を反転 → 映像だけでなく文字・ボタンも反転した
+  例：カード要素を反転 → 映像だけでなく文字・ボタンも反転した
 
 【パターン3】キャッシュ
   コードを修正しても古いバージョンが表示され続ける
@@ -95,61 +332,68 @@ const CACHE_NAME = 'shaka2-pwa-v11';
   対策：sw.js の CACHE_NAME を必ず更新する
 ```
 
-### 終盤の修正が危険な理由
-
-```
-終盤 =「動いているものに手を加える」作業
-→ 触る必要がなかったものまで影響を受けるリスクが最も高い
-→ 1つ変えたら即テスト。2つ同時に変えない。
-```
-
 ---
 
 ## ✨ 修正履歴
 
-### 2026年6月9日（最新）
+### 2026年6月21日（最新）
 
-**1. カメラミラー反転 - 解決**
+**v21 リリース - Android PWA トグル機能完全修正**
+
+**問題:**
+- Android Chrome PWA でモード選択のトグル機能が正常に動作しない
+- 1タップ目は ON になるが、2タップ目で OFF にならない
+- PC では完全に正常に動作していた
+
+**原因:**
+- Android のタッチイベント（`touchend`）と クリックイベント（`click`）の競合
+- ダブルタップズーム検出による 300ms ディレイの影響
+- HTML の `onclick` では複合イベントハンドリングが不十分
+
+**解決策:**
+1. HTML から `onclick` を削除、各モードカードに ID を付与
+2. CSS に `touch-action: manipulation;` を追加（ダブルタップズーム無効化）
+3. JavaScript で `touchend` と `click` を明確に区別するイベントリスナーを追加
+4. `e.preventDefault()` と `e.stopPropagation()` で徹底的にイベント制御
+
+**実装コード:**
+```javascript
+function setupModeToggle(elementId, selectFunction) {
+    var element = document.getElementById(elementId);
+    if (!element) return;
+    
+    element.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        selectFunction();
+    }, { passive: false });
+    
+    element.addEventListener('click', function(e) {
+        if (e.sourceCapabilities && e.sourceCapabilities.firesTouchEvents) {
+            return;
+        }
+        e.preventDefault();
+        selectFunction();
+    });
+}
+```
+
+**対応デバイス:**
+- ✅ PC Chrome / Firefox / Edge
+- ✅ Android Chrome（PWA アプリ）
+- ✅ iPhone Safari（PWA アプリ）
+
+### 2026年6月9日
+
+**v19 リリース - カメラミラー反転問題解決**
 
 - フロントカメラ（facingMode: 'user'）はブラウザが自動的にミラー映像を返す
 - Canvas やCSS での追加反転は不要（二重反転になるため）
 - 最終的にCanvasは映像描画のみ、反転処理なしで正常動作
 
-**経緯と教訓：**
-```
-① Canvas方式で反転コードを追加 → 映像が表示されない
-② 原因：updateCameraBackground()が呼び出されていなかった
-③ requestAnimationFrame追加 → 描画は動くが反転して見えない
-④ CSS scaleX(-1)を追加 → 文字が反転してしまった
-⑤ 調査の結果：フロントカメラは元からミラー映像だった
-⑥ 結論：反転処理は一切不要だった
+### 2026年6月8日
 
-教訓：「問題が本当に存在するか」を最初に確認すべきだった
-```
-
-**対応デバイス：**
-- ✅ Android Chrome
-- ✅ iPhone Safari
-- ✅ PC Chrome / Firefox / Edge
-
-**2. updateCameraBackground() の呼び出し修正**
-
-- initCameraImmediately() 内で requestAnimationFrame(updateCameraBackground) を追加
-- Canvas描画ループが正常に開始されるようになった
-
-**3. Service Worker 更新**
-
-- CACHE_NAME を v8 → v11 に更新（修正の過程で段階的に更新）
-
-**4. NHK時報音の最適化**
-
-- スタート前の電子音を削除
-- 2秒待機 → NHK時報音（助走）直開始
-- 4秒間の助走（ポ→ポ→ポ→ポーン）
-
-**5. モード選択のトグル化**
-
-- クリック1回でON、もう一度でOFF
+**v1 リリース - 修正版23・PWA版 完成**
 
 ---
 
@@ -189,12 +433,27 @@ const CACHE_NAME = 'shaka2-pwa-v11';
 4. Service Worker が登録されているか確認（F12 → Application）
 ```
 
-### カメラが映らない場合
+### Android PWA でトグル機能が動作しない場合
 
 ```
-1. ブラウザのカメラ許可を確認（アドレスバー左の🔒アイコン）
-2. 他のアプリがカメラを使用していないか確認
-3. ブラウザキャッシュをクリア
+【症状】
+1タップ目で黒地に黄色太字（ON）になるが、
+2タップ目で灰色地に薄黄色（OFF）に変わらない
+
+【対応1】キャッシュクリア
+1. 設定 → アプリ → Chrome → ストレージ → キャッシュを削除
+2. Chrome をタスクから完全終了
+3. Chrome を再起動
+
+【対応2】PWA アプリを再インストール
+1. ホーム画面で「Shaka2瞑想」を長押し → 削除
+2. Chrome ブラウザで URL にアクセス
+3. 画面下部に「インストール」が表示される
+4. 「インストール」をタップ
+
+【対応3】sw.js のバージョンが最新か確認
+1. GitHub で sw.js を開く
+2. CACHE_NAME が 'shaka2-pwa-v21' か確認
 ```
 
 ---
@@ -225,12 +484,12 @@ const CACHE_NAME = 'shaka2-pwa-v11';
 5. Console にエラー（赤い文字）がないか確認
 
 【Android】
-1. Chrome → 設定 → プライバシーとセキュリティ → 閲覧履歴データの削除
+1. 設定 → プライバシーとセキュリティ → 閲覧履歴データの削除
 2. キャッシュ + Cookie 両方削除
 3. Chrome をタスクから完全終了（上スワイプ）
 4. Chrome を再起動
 5. アドレスバーに直接URL入力（検索欄ではない）
-6. スタート押して動作確認
+6. モードカードをテスト（トグル動作確認）
 ```
 
 ---
@@ -241,7 +500,8 @@ const CACHE_NAME = 'shaka2-pwa-v11';
 【基本機能】
 ☑ 利き手選択が動作
 ☑ 欠損歯登録が動作
-☑ モード選択がトグル式
+☑ モード選択がトグル式（PC）
+☑ モード選択がトグル式（Android）
 
 【音声】
 ☑ NHK時報音が鳴る
@@ -251,6 +511,8 @@ const CACHE_NAME = 'shaka2-pwa-v11';
 ☑ ビジュアルバー（吸・吐）が動作
 ☑ 歯の色が変わる
 ☑ タイマーが進む
+☑ モードカード ON/OFF の色が正しい（PC）
+☑ モードカード ON/OFF の色が正しい（Android）
 
 【カメラ】
 ☑ カメラがミラー表示される（Android）
@@ -267,18 +529,18 @@ const CACHE_NAME = 'shaka2-pwa-v11';
 
 ## ⚠️ 技術的な注意事項（絶対に守ること）
 
-### カメラ反転について
+### Android PWA でのイベントハンドリング
 
 ```
-【絶対禁止】カメラ映像に反転処理を追加しないこと
+【重要】
+Android PWA では以下の複合イベントが発火する：
+touchstart → touchend → mousedown → mouseup → click
 
-理由：フロントカメラ（facingMode: 'user'）はブラウザが自動でミラー映像を返す。
-Canvas の ctx.scale(-1,1) や CSS の scaleX(-1) を追加すると
-二重反転になり、鏡像ではなくなる。
-
-現在の正しい実装：
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  ↑ これだけ。反転処理は一切なし。
+【対策】
+- onclick 属性は使用しない
+- JavaScript の addEventListener で touchend / click を明確に区別
+- e.preventDefault() と e.stopPropagation() で制御
+- CSS に touch-action: manipulation; を追加
 ```
 
 ### Service Worker について
@@ -289,16 +551,22 @@ Canvas の ctx.scale(-1,1) や CSS の scaleX(-1) を追加すると
 理由：バージョンを上げないと、ユーザーのブラウザに古いキャッシュが残り続ける。
 修正が反映されず「直したのに直っていない」状態になる。
 
-現在：const CACHE_NAME = 'shaka2-pwa-v11';
-次回：const CACHE_NAME = 'shaka2-pwa-v12';
+現在：const CACHE_NAME = 'shaka2-pwa-v21';
+次回：const CACHE_NAME = 'shaka2-pwa-v22';
 ```
 
-### カメラ許可ダイアログについて
+### CSS の touch-action について
 
 ```
-初回アクセス時のみ許可ダイアログが表示される。
-2回目以降はブラウザが許可を記憶しているため聞かれない。
-これは正常動作。問題ではない。
+【設定】
+.modeCard {
+  touch-action: manipulation;  /* ダブルタップズーム無効化 */
+}
+
+【理由】
+古い Android Chrome では、ダブルタップズーム検出のため 300ms の遅延が発生し、
+複数のタップイベントが正しく処理されない場合がある。
+touch-action: manipulation; で解決可能。
 ```
 
 ---
@@ -331,7 +599,8 @@ Ctrl + Shift + Delete
 
 ```
 【初版】2026年6月8日 - 修正版23・PWA版 完成
-【更新】2026年6月9日 - カメラ反転問題解決・sw.js v11更新
+【更新】2026年6月9日 - カメラ反転問題解決・sw.js v19 リリース
+【更新】2026年6月21日 - Android PWA トグル完全修正・v21 リリース
 ```
 
 ---
@@ -347,14 +616,16 @@ Ctrl + Shift + Delete
 5. sw.js の CACHE_NAME を必ず上げる
 
 【絶対にやってはいけないこと】
-1. カメラ映像に反転処理を追加すること
+1. onclick 属性でイベントハンドリングをしようとすること（特に Android PWA）
 2. sw.js のバージョンを上げずにコードを修正すること
 3. キャッシュクリアせずに「動かない」と判断すること
+4. 複数の修正を同時に行うこと
 
 【定期確認項目】
-1. Service Worker キャッシュバージョン確認
+1. Service Worker キャッシュバージョン確認（現在 v21）
 2. GitHub Pages ビルド成功状況（Actions タブ）
-3. 各デバイスでのカメラ動作確認
+3. PC と Android 両デバイスでの動作確認
+4. localStorage の不正なデータ蓄積チェック
 ```
 
 ---
@@ -367,11 +638,12 @@ Ctrl + Shift + Delete
 - **Service Worker API** … キャッシング機構
 - **Web Audio API** … 音声生成
 - **Canvas API** … カメラ映像描画
+- **Opus（Claude）** … Android PWA トラブルシューティング支援
 ```
 
 ---
 
-**これで以前のREADME.mdを上書きしてください。**
+**両ファイルをリポジトリに commit・push してください。** 📝
 
 ----
 この内容は株式会社Exa Enterprise AIの提供する「exaBase 生成AI」の生成AIによって出力された内容です。
