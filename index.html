@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ★★★ Shaka2瞑想 修正版23（完成版・モード切り替えトグル化） ★★★ -->
+<!-- ★★★ Shaka2瞑想 修正版23（完成版・認証機能付き・パターンA） ★★★ -->
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -8,6 +8,96 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Hiragino Sans','Yu Gothic UI',sans-serif;background:#1a1a2e;color:#e0e0e0;min-height:100vh;display:flex;flex-direction:column;align-items:center;user-select:none}
+
+/* ★★★ 認証画面スタイル ★★★ */
+.authScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #16213e, #0f3460);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+.authScreen.hidden {
+  display: none;
+}
+
+.authContainer {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.authContainer h1 {
+  color: #16213e;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+  letter-spacing: 0.1em;
+}
+
+.authSubtitle {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.authContainer input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+.authContainer input:focus {
+  outline: none;
+  border-color: #0f3460;
+  box-shadow: 0 0 8px rgba(15, 52, 96, 0.3);
+}
+
+.authBtn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.authBtn:hover {
+  background: linear-gradient(135deg, #45a049, #276428);
+}
+
+.authBtn:active {
+  transform: scale(0.98);
+}
+
+.authError {
+  color: #f44336;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  min-height: 1.2em;
+}
+
+/* ★★★ ここから元のスタイル ★★★ */
 header{text-align:center;padding:8px;width:100%;background:linear-gradient(135deg,#16213e,#0f3460)}
 header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .m{display:flex;flex-direction:column;align-items:center;width:100%;max-width:500px;padding:4px 6px;gap:3px;flex:1}
@@ -102,6 +192,26 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
 .phaseInfoBox h3{color:#ffd700;font-size:.95rem;margin-bottom:8px}
 .phaseInfoBox p{color:#aaa;font-size:.9rem;line-height:1.6}
 .phaseCtrl{display:flex;gap:10px;width:100%;max-width:500px;justify-content:center;flex-wrap:wrap}
+
+.logoutBtn {
+  position: fixed;
+  bottom: 4px;
+  right: 4px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.2s;
+}
+
+.logoutBtn:hover {
+  background: #d32f2f;
+}
+
 @keyframes strongBlink {
   0% { opacity: 1; }
   25% { opacity: 0.2; }
@@ -109,6 +219,7 @@ header h1{font-size:1.2rem;color:#e8d5b7;letter-spacing:.1em}
   75% { opacity: 0.2; }
   100% { opacity: 1; }
 }
+
 footer{padding:4px;font-size:.6rem;color:#888;text-align:center;margin-top:auto}
 </style>
 <link rel="manifest" href="./manifest.json">
@@ -126,6 +237,34 @@ if ('serviceWorker' in navigator) {
 </script>
 </head>
 <body>
+
+<!-- ★★★ 認証画面 ★★★ -->
+<div class="authScreen" id="authScreen">
+  <div class="authContainer">
+    <h1>🪵 Shaka2瞑想</h1>
+    <p class="authSubtitle">🔐 テスト版アクセス認証</p>
+    
+    <input 
+      type="email" 
+      id="authEmail" 
+      placeholder="メールアドレス"
+      autocomplete="off"
+    >
+    
+    <input 
+      type="text" 
+      id="authCode" 
+      placeholder="秘密コード（5桁）"
+      maxlength="5"
+      autocomplete="off"
+      pattern="[0-9]{5}"
+    >
+    
+    <button class="authBtn" onclick="verifyAuth()">アクセス ▶</button>
+    
+    <div class="authError" id="authError"></div>
+  </div>
+</div>
 
 <!-- 利き手選択画面 -->
 <div class="hsScreen" id="hsScreen">
@@ -367,10 +506,171 @@ if ('serviceWorker' in navigator) {
   <button class="b bx" id="bX" onclick="st()">⏹ 終了</button>
 </div>
 
+<button class="logoutBtn" onclick="logout()">ログアウト</button>
+
 </div>
-<footer>★ Shaka2瞑想 修正版23（完成版・モード切り替えトグル化） ★ 鳥井式心身調律歯磨き法</footer>
+<footer>★ Shaka2瞑想 修正版23（完成版・認証機能付き・パターンA） ★ 鳥井式心身調律歯磨き法</footer>
 
 <script>
+// ★★★ 認証管理 ★★★
+
+// 🔑 テスター情報
+const AUTHORIZED_TESTERS = {
+  'atama.41414444@gmail.com': '11271',        // あなた（開発者用）
+  'friend1@example.com': '12345',    // 友人 A
+  'friend2@example.com': '54321'     // 友人 B
+};
+
+// ★★★ 開発モード設定（パターン A：PC のみスキップ）★★★
+const DEV_MODE_ENABLED = true;
+const DEV_EMAIL = 'you@example.com';
+const DEV_DEVICES = {
+  'pc': true,      // PC はスキップ有効（毎回認証不要）
+  'mobile': false  // スマホは毎回認証必須
+};
+
+function getDeviceType() {
+  const ua = navigator.userAgent;
+  if (/iPhone|iPad|Android/.test(ua)) {
+    return 'mobile';
+  }
+  return 'pc';
+}
+
+function verifyAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const code = document.getElementById('authCode').value.trim();
+  const errorDiv = document.getElementById('authError');
+
+  // バリデーション
+  if (!email || !code) {
+    errorDiv.textContent = 'メールアドレスとコードを入力してください';
+    return;
+  }
+
+  if (code.length !== 5 || isNaN(code)) {
+    errorDiv.textContent = 'コードは5桁の数字です';
+    return;
+  }
+
+  // 認証チェック
+  const correctCode = AUTHORIZED_TESTERS[email];
+  
+  if (!correctCode) {
+    errorDiv.textContent = 'メールアドレスが登録されていません';
+    return;
+  }
+
+  if (correctCode !== code) {
+    errorDiv.textContent = 'コードが間違っています';
+    return;
+  }
+
+  // ✅ 認証成功
+  errorDiv.textContent = '';
+  
+  // sessionStorage に記録
+  try {
+    sessionStorage.setItem('shaka2_authenticated', 'true');
+    sessionStorage.setItem('shaka2_user', email);
+    
+    // 開発者 & PC のみ、localStorage に保存（スキップ有効）
+    if (DEV_MODE_ENABLED && email === DEV_EMAIL) {
+      const deviceType = getDeviceType();
+      if (DEV_DEVICES[deviceType]) {
+        localStorage.setItem('shaka2_dev_skip', 'true');
+        localStorage.setItem('shaka2_dev_device', deviceType);
+        console.log('開発者モード有効（PC スキップ）');
+      }
+    }
+  } catch(e) {}
+
+  // 認証画面を非表示
+  document.getElementById('authScreen').classList.add('hidden');
+  
+  // メイン画面を初期化
+  restoreUI();
+}
+
+function logout() {
+  if (confirm('ログアウトしますか？')) {
+    // 全データを削除
+    try {
+      sessionStorage.removeItem('shaka2_authenticated');
+      sessionStorage.removeItem('shaka2_user');
+      sessionStorage.removeItem('shaka2_missing');
+      sessionStorage.removeItem('shaka2_handedness');
+      sessionStorage.removeItem('shaka2_settings');
+      
+      // 開発モード時も localStorage をクリア
+      localStorage.removeItem('shaka2_dev_skip');
+      localStorage.removeItem('shaka2_dev_device');
+    } catch(e) {}
+    
+    // 認証画面を表示
+    document.getElementById('authScreen').classList.remove('hidden');
+    
+    // フォームをリセット
+    document.getElementById('authEmail').value = '';
+    document.getElementById('authCode').value = '';
+    document.getElementById('authError').textContent = '';
+    
+    // 全画面をリセット
+    document.getElementById('allModeScreen').style.display = 'none';
+    document.getElementById('caMain').style.display = 'none';
+    document.getElementById('tabArea').style.display = 'none';
+    document.getElementById('mainCtrl').style.display = 'none';
+    document.getElementById('phaseScreen').classList.remove('show');
+    document.getElementById('hsScreen').classList.remove('show');
+    document.getElementById('msScreen').classList.remove('show');
+    document.getElementById('ov').classList.remove('show');
+  }
+}
+
+function checkAuthOnLoad() {
+  // 開発モード：設定に応じてスキップ
+  if (DEV_MODE_ENABLED) {
+    const deviceType = getDeviceType();
+    const devSkip = localStorage.getItem('shaka2_dev_skip');
+    const devDevice = localStorage.getItem('shaka2_dev_device');
+    
+    if (devSkip === 'true' && devDevice === deviceType && DEV_DEVICES[deviceType]) {
+      console.log('開発者スキップモード：認証をスキップします');
+      document.getElementById('authScreen').classList.add('hidden');
+      sessionStorage.setItem('shaka2_authenticated', 'true');
+      sessionStorage.setItem('shaka2_user', DEV_EMAIL);
+      restoreUI();
+      return;
+    }
+  }
+
+  const isAuthenticated = sessionStorage.getItem('shaka2_authenticated') === 'true';
+  
+  if (isAuthenticated) {
+    // 既に認証済み
+    document.getElementById('authScreen').classList.add('hidden');
+    restoreUI();
+  } else {
+    // 認証画面を表示
+    document.getElementById('authScreen').classList.remove('hidden');
+  }
+}
+
+// Enterキーで送信
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('authEmail').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') document.getElementById('authCode').focus();
+  });
+  
+  document.getElementById('authCode').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') verifyAuth();
+  });
+  
+  checkAuthOnLoad();
+});
+
+// ★★★ ここから元のJavaScript ★★★
+
 var video = null;
 var canvas = null;
 var ctx = null;
@@ -426,8 +726,8 @@ var timerStarted = false;
 var ALL_TEETH = ['UR8','UR7','UR6','UR5','UR4','UR3','UR2','UR1','UL1','UL2','UL3','UL4','UL5','UL6','UL7','UL8','LR8','LR7','LR6','LR5','LR4','LR3','LR2','LR1','LL1','LL2','LL3','LL4','LL5','LL6','LL7','LL8'];
 var missingTeeth = {};
 
-function loadMs() { try { var s = localStorage.getItem('shaka2_missing'); missingTeeth = s ? JSON.parse(s) : {}; } catch(e) { missingTeeth = {}; } }
-function saveMs() { try { localStorage.setItem('shaka2_missing', JSON.stringify(missingTeeth)); } catch(e) {} }
+function loadMs() { try { var s = sessionStorage.getItem('shaka2_missing'); missingTeeth = s ? JSON.parse(s) : {}; } catch(e) { missingTeeth = {}; } }
+function saveMs() { try { sessionStorage.setItem('shaka2_missing', JSON.stringify(missingTeeth)); } catch(e) {} }
 function isMissing(id) { return !!missingTeeth[id]; }
 function syncMsSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById('ms_' + id); if (e) e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); syncMainSvg(); }
 function syncMainSvg() { ALL_TEETH.forEach(function(id) { var e = document.getElementById(id); if (!e) return; if (e.classList.contains('ta')) return; e.className.baseVal = isMissing(id) ? 'tm' : 'td'; }); }
@@ -439,12 +739,12 @@ function openMs() { if (run) return; syncMsSvg(); document.getElementById('msScr
 
 function confirmHandedness() {
   handedness = document.querySelector('input[name=handedness]:checked').value;
-  try { localStorage.setItem('shaka2_handedness', handedness); } catch(e) {}
+  try { sessionStorage.setItem('shaka2_handedness', handedness); } catch(e) {}
   document.getElementById('hsScreen').classList.remove('show');
   loadMs(); syncMainSvg();
   document.getElementById('msScreen').classList.add('show');
 }
-function loadHandedness() { try { var s = localStorage.getItem('shaka2_handedness'); if (s && (s==='right'||s==='left')) handedness = s; } catch(e) {} }
+function loadHandedness() { try { var s = sessionStorage.getItem('shaka2_handedness'); if (s && (s==='right'||s==='left')) handedness = s; } catch(e) {} }
 
 function selectAreaMode(mode) { 
   if(areaMode === mode) {
@@ -461,82 +761,6 @@ function selectAreaMode(mode) {
       e.classList.add('selected');
     } else {
       e.classList.remove('selected');
-    }
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectInterMode(mode) { 
-  if(interMode === mode) {
-    interMode = null;
-  } else {
-    interMode = mode;
-  }
-  
-  var modeMap = {'standard': 0, 'brain': 1};
-  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e, i) { 
-    if(interMode === null) {
-      e.classList.remove('selected');
-    } else if(i === modeMap[interMode]) {
-      e.classList.add('selected');
-    } else {
-      e.classList.remove('selected');
-    }
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectWantapMode(mode) { 
-  if(wantapMode === mode) {
-    wantapMode = null;
-  } else {
-    wantapMode = mode;
-  }
-  
-  var modeMap = {'standard': 0, 'brain': 1};
-  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e, i) { 
-    if(wantapMode === null) {
-      e.classList.remove('selected');
-    } else if(i === modeMap[wantapMode]) {
-      e.classList.add('selected');
-    } else {
-      e.classList.remove('selected');
-    }
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectInterMode(mode) { 
-  if(interMode === mode) {
-    interMode = null;
-  } else {
-    interMode = mode;
-  }
-  // 修正：各カードを明確に ON/OFF する
-  var modeMap = {'standard': 0, 'brain': 1};
-  document.querySelectorAll('#allModeScreen .md:nth-child(2) .modeCard').forEach(function(e,i) { 
-    if(interMode === null) {
-      e.classList.remove('selected');
-    } else {
-      e.classList.toggle('selected', i === modeMap[interMode]); 
-    }
-  }); 
-  updateCompleteBtn(); 
-}
-
-function selectWantapMode(mode) { 
-  if(wantapMode === mode) {
-    wantapMode = null;
-  } else {
-    wantapMode = mode;
-  }
-  // 修正：各カードを明確に ON/OFF する
-  var modeMap = {'standard': 0, 'brain': 1};
-  document.querySelectorAll('#allModeScreen .md:nth-child(3) .modeCard').forEach(function(e,i) { 
-    if(wantapMode === null) {
-      e.classList.remove('selected');
-    } else {
-      e.classList.toggle('selected', i === modeMap[wantapMode]); 
     }
   }); 
   updateCompleteBtn(); 
@@ -640,7 +864,6 @@ function updateCameraBackground() {
   canvas.height = caMain.offsetHeight || 500;
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     
   var imageData = canvas.toDataURL('image/jpeg', 0.8);
@@ -655,10 +878,10 @@ var D1_MASTER_R = [['上顎','正中','唇側','前歯','じょう がく せい
 
 var D1_MASTER_L = [['上顎','正中','唇側','前歯','じょう がく せい ちゅう しん そく ぜ ん し ー','UR1 UR2 UR3 UL1 UL2 UL3'],['上顎','右側','頬側','小臼歯','じょう がく う そく きょう そく しょう きゅう し ー','UR4 UR5'],['上顎','右側','頬側','大臼歯','じょう がく う そく きょう そく だい きゅう し ー','UR6 UR7 UR8'],['上顎','左側','頬側','小臼歯','じょう がく さ そく きょう そく しょう きゅう し ー','UL4 UL5'],['上顎','左側','頬側','大臼歯','じょう がく さ そく きょう そく だい きゅう し ー','UL6 UL7 UL8'],['下顎','正中','唇側','前歯','か がく せい ちゅう しん そく ぜ ん し ー','LR1 LR2 LR3 LL1 LL2 LL3'],['下顎','右側','頬側','小臼歯','か がく う そく きょう そく しょう きゅう し ー','LR4 LR5'],['下顎','右側','頬側','大臼歯','か がく う そく きょう そく だい きゅう し ー','LR6 LR7 LR8'],['下顎','左側','頬側','小臼歯','か がく さ そく きょう そく しょう きゅう し ー','LL4 LL5'],['下顎','左側','頬側','大臼歯','か がく さ そく きょう そく だい きゅう し ー','LL6 LL7 LL8'],['上顎','正中','口蓋側','前歯','じょう がく せい ちゅう こうがい そく ぜ ん し ー','UR1 UR2 UR3 UL1 UL2 UL3'],['上顎','右側','口蓋側','小臼歯','じょう がく う そく こうがい そく しょう きゅう し ー','UR4 UR5'],['上顎','右側','口蓋側','大臼歯','じょう がく う そく こうがい そく だい きゅう し ー','UR6 UR7 UR8'],['上顎','左側','口蓋側','小臼歯','じょう がく さ そく こうがい そく しょう きゅう し ー','UL4 UL5'],['上顎','左側','口蓋側','大臼歯','じょう がく さ そく こうがい そく だい きゅう し ー','UL6 UL7 UL8'],['下顎','正中','舌側','前歯','か がく せい ちゅう ぜつ そく ぜ ん し ー','LR1 LR2 LR3 LL1 LL2 LL3'],['下顎','右側','舌側','小臼歯','か がく う そく ぜつ そく しょう きゅう し ー','LR4 LR5'],['下顎','右側','舌側','大臼歯','か がく う そく ぜつ そく だい きゅう し ー','LR6 LR7 LR8'],['下顎','左側','舌側','小臼歯','か がく さ そく ぜつ そく しょう きゅう し ー','LL4 LL5'],['下顎','左側','舌側','大臼歯','か がく さ そく ぜつ そく だい きゅう し ー','LL6 LL7 LL8'],['上顎','右側','臼歯部','咬合面','じょう がく う そく きゅう しぶ こう ごう めー ん','UR4 UR5 UR6 UR7 UR8'],['上顎','左側','臼歯部','咬合面','じょう がく さ そく きゅう しぶ こう ごう めー ん','UL4 UL5 UL6 UL7 UL8'],['下顎','右側','臼歯部','咬合面','か がく う そく きゅう しぶ こう ごう めー ん','LR4 LR5 LR6 LR7 LR8'],['下顎','左側','臼歯部','咬合面','か がく さ そく きゅう しぶ こう ごう めー ん','LL4 LL5 LL6 LL7 LL8']];
 
+var NM = ['いち','にー','さん','よん','ごー','ろく','なな','はち'];
+
 function buildD1_Right() { return D1_MASTER_R.filter(function(row) { return row[5].split(' ').filter(Boolean).some(function(id) { return !isMissing(id); }); }); }
 function buildD1_Left() { return D1_MASTER_L.filter(function(row) { return row[5].split(' ').filter(Boolean).some(function(id) { return !isMissing(id); }); }); }
-
-var NM = ['いち','にー','さん','よん','ごー','ろく','なな','はち'];
 
 function buildDI_Right() { var r = []; if (!isMissing('UR1') && !isMissing('UL1')) r.push(['いち ばん いち ばん', 'UR1 UL1']); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('UL'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','UL'+p[i]+' UL'+p[i+1]]); } })(); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('UR'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','UR'+p[i]+' UR'+p[i+1]]); } })(); if (!isMissing('LR1') && !isMissing('LL1')) r.push(['いち ばん いち ばん', 'LR1 LL1']); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('LL'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','LL'+p[i]+' LL'+p[i+1]]); } })(); (function() { var p=[]; for(var n=1;n<=8;n++) if(!isMissing('LR'+n)) p.push(n); for(var i=0;i<p.length-1;i++) { if(p[i+1]-p[i]!==1) continue; r.push([NM[p[i]-1]+' ばん '+NM[p[i+1]-1]+' ばん','LR'+p[i]+' LR'+p[i+1]]); } })(); return r; }
 
@@ -887,16 +1110,15 @@ function saveSettings(){
     if(areaMode !== null) settings.areaMode = areaMode;
     if(interMode !== null) settings.interMode = interMode;
     if(wantapMode !== null) settings.wantapMode = wantapMode;
-    localStorage.setItem('shaka2_settings',JSON.stringify(settings));
+    sessionStorage.setItem('shaka2_settings',JSON.stringify(settings));
   }catch(e){}  
 }
 
 function loadSettings(){
   try{
-    var s=localStorage.getItem('shaka2_settings');
+    var s=sessionStorage.getItem('shaka2_settings');
     if(!s)return false;
     var d=JSON.parse(s);
-    // areaMode, interMode, wantapMode をリセット
     areaMode = null;
     interMode = null;
     wantapMode = null;
@@ -905,6 +1127,7 @@ function loadSettings(){
     return false;
   }
 }
+
 function openInitSettings(){
   document.getElementById('allModeScreen').style.display='none';
   document.getElementById('hsScreen').classList.add('show');
@@ -1090,19 +1313,6 @@ function restoreModeCards(){
   updateCompleteBtn();
 }
 
-restoreUI();
-function debugModeCard(element, name) {
-    ['touchstart', 'touchend', 'mousedown', 'mouseup', 'click'].forEach(evt => {
-        element.addEventListener(evt, function(e) {
-            console.log(`[${name}] ${evt} fired at ${Date.now()}`);
-        });
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    var areaCards = document.querySelectorAll('#allModeScreen .md:nth-child(1) .modeCard');
-    if(areaCards[0]) debugModeCard(areaCards[0], 'AREA-STANDARD');
-});
 </script>
 </body>
 </html>
